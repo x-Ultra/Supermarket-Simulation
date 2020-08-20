@@ -45,7 +45,7 @@ struct config_cassa{
     //una singola fila condivisa associata a più casse
     //(in questo caso ogni cassa di 'casse' avrà una fila di
     // un solo cliente)
-    //oppure puo' essere farra d apiu' casse, ognina con la
+    //oppure puo' essere farra da piu' casse, ognina con la
     //sua fila di clienti, !! in questo caso fila_condivisa = null !!
     struct casse *casse;
     struct fila_cassa *fila_condivisa;
@@ -67,13 +67,15 @@ struct evento{
     //tempo in secondi del momento in cui schedulare l'evento
     int tempo;
 
-
+    //fila dalla quale 'smaltire' il cliente, se l'evento
+    //e di tipo 'servito'.
+    struct fila_cassa *fila;
 };
 
 //lista doppiamente collegata di eventi
 struct lista_eventi{
 
-    struct evento evento;
+    struct evento *evento;
     struct lista_eventi *next;
     struct lista_eventi *prev;
 };
@@ -102,7 +104,7 @@ struct lista_eventi{
 
 //tipi di evento
 #define arrivo 0
-#define servizio 1
+#define servito 1
 
 //ora di apertura e chiusura, in secondi
 #define opening_time 6*60*60
@@ -148,3 +150,6 @@ struct lista_eventi{
 
 //configurazioni di cassa attive
 struct config_cassa_attive *config_attive = NULL;
+
+//lista di eventi
+struct lista_eventi *eventi = NULL;
