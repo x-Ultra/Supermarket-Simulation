@@ -13,9 +13,15 @@ struct cliente{
     //ora in secondi
     int in_fila;
     int iniziato_a_servire;
-    int servito;
+    int servito_alle;
 
     int attesa_in_fila;
+
+    //la fila scelta dal cliente
+    struct fila_cassa **fila_scelta;
+
+    //la configurazione di cassa scelta
+    struct config_cassa *config_scelta;
 };
 
 //fila, lista collegata di clienti
@@ -110,6 +116,9 @@ struct lista_eventi{
 #define opening_time 6*60*60
 #define closing_time 22*60*60
 
+//tempo usato per scandire gli eventi
+int T = opening_time;
+
 //orari in secondi
 #define ore_6 6*60*60
 #define ore_7 7*60*60
@@ -153,3 +162,6 @@ struct config_cassa_attive *config_attive = NULL;
 
 //lista di eventi
 struct lista_eventi *eventi = NULL;
+
+//lista di tutti i clienti serviti
+struct fila_cassa *clienti_serviti = NULL;

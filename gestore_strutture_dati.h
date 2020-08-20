@@ -40,6 +40,7 @@ struct fila_cassa *crea_fila(){
 
     struct fila_cassa *fc = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
     fc->cliente_in_fila = NULL;
+    fc->next = NULL;
 
     return fc;
 }
@@ -62,10 +63,6 @@ int lunghezza_fila(struct fila_cassa *fila){
     }
 
     return l;
-}
-
-void rimuovi_cliente_infila(struct fila_cassa *fila){
-    //necessario ?
 }
 
 
@@ -96,6 +93,8 @@ struct casse *genera_set_casse(int num_casse){
     return casse;
 }
 
+
+//possibilità di aggiungere una cassa ad una configurazione esistente
 int aggiungi_cassa(struct casse *casse){
 
     struct casse *c = casse;
@@ -122,6 +121,8 @@ int numero_casse(struct casse *casse){
     return l;
 }
 
+
+//possibilità di rimuovere una cassa ad una configurazione esistente
 void rimuovi_cassa(struct casse *casse){
     //necessario ?
 }
@@ -179,7 +180,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
 
             nuova_configurazione->tipo = condivisa;
             nuova_configurazione->casse = genera_set_casse(numero_casse);
-            nuova_configurazione->fila_condivisa = NULL;
+            nuova_configurazione->fila_condivisa = crea_fila();
 
             break;
         case pseudo_casuale:
@@ -188,7 +189,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
             //prelevandolo dalla fila condivisa
             nuova_configurazione->tipo = condivisa;
             nuova_configurazione->casse = genera_set_casse(numero_casse);
-            nuova_configurazione->fila_condivisa = crea_fila();
+            nuova_configurazione->fila_condivisa = NULL;
 
             break;
 
@@ -385,7 +386,7 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 //gerera ora di arrivo, usato per generare a monte tutti gli arrivi dei clienti,
 //e dunque tutti gli eventi di tipo 'arrivo'. Ciascun evento sarà associato ad un orario
 //che verrà usato per la creazione del cliente.
-int genera_ora_arrivo(int ora){
+int genera_arrivo(int ora){
 
     int media_arr = 0;
 
@@ -444,18 +445,16 @@ int genera_ora_arrivo(int ora){
     return 30;
 }
 
-void genera_evento_servito(struct cliente *c, struct fila_cassa *fila){
+void genera_evento_servito(struct cliente *c){
 
     int n = c->num_oggetti;
+
     //TODO chiamare esponenziale in base al numero di oggetto del cliente
     int tempo_di_servizio = 60;
 
 
-    //TODO qui
-    aggiungi_evento(servito, tempo_di_servizio + c->iniziato_a_servire , fila);
+    aggiungi_evento(servito, tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
 }
-
-
 
 
 
@@ -505,6 +504,8 @@ void info_su_configurazioni_attive(){
 
     }
 }
+
+//TODO, stampa eventi
 
 
 
