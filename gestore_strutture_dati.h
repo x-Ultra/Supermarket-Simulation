@@ -562,8 +562,39 @@ void info_su_configurazioni_attive(){
     }
 }
 
-//TODO, stampa eventi
 
+char* tipo_evento_str(int tipo){
+
+    switch (tipo){
+
+        case arrivo:
+            return arrivo_str;
+        case servito:
+            return servito_str;
+        default:
+            return "Non gestito";
+    }
+
+}
+
+
+char *secondi_ora(int secondi){
+
+    //TODO
+    return "8:00";
+}
+
+
+void stampa_tutti_eventi(){
+
+    int i = 0;
+    for(struct lista_eventi *le = eventi; le != NULL; le = le->next){
+
+        printf("[%d] - %s - %s\n", i, tipo_evento_str(le->evento->tipo), secondi_ora(le->evento->tempo));
+        i++;
+    }
+
+}
 
 
 

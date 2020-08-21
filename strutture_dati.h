@@ -119,7 +119,9 @@ struct lista_eventi{
 
 //tipi di evento
 #define arrivo 0
+#define arrivo_str "Arrivo"
 #define servito 1
+#define servito_str "Servito"
 
 //ora di apertura e chiusura, in secondi
 #define opening_time 6*60*60

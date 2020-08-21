@@ -9,6 +9,7 @@
 void popola_arrivi(int giorno_settimana){
 
     int arr;
+    printf("Popolamento degli arrivi\n");
     while(T < closing_time){
 
 
@@ -20,6 +21,7 @@ void popola_arrivi(int giorno_settimana){
         //genero l'evento
         aggiungi_evento(arrivo, T, NULL);
     }
+    printf("Popolamento degli arrivi terminato\n");
 }
 
 
@@ -180,6 +182,10 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
 void start(){
 
     popola_arrivi(giorno_corrente);
+
+    stampa_tutti_eventi();
+
+    return;
 
     struct evento *evento_corrente;
 
