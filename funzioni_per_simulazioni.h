@@ -8,20 +8,14 @@
 #include "strutture_dati.h"
 #include "gestore_strutture_dati.h"
 
-//inizializza simulazione (eg. setta i semi, tipi di configurazioni di cassa in base ai cassieri....)
-void inizializza(){
-
-
-}
-
 
 //genera tutti gli eventi di tipo arrivo (dei clienti)
-void popola_arrivi(){
+void popola_arrivi(int giorno_settimana){
 
     int arr;
     while(T < closing_time){
 
-        arr = genera_arrivo(T);
+        arr = genera_arrivo(T, giorno_settimana);
 
         //aggiorno il tempo
         T = T + arr;
@@ -36,12 +30,90 @@ void popola_arrivi(){
 //piu' favorevole (in base al suo numero di acquisti).
 int scegli_fila(struct cliente *cli){
 
+    //se il tempo medio di attesa e' maggiore di una certa quantita, il cliente abbandona
+    if(attesa_media_corrente > max_attesa){
+        cli->fila_scelta = NULL;
+
+        return 0;
+    }
+
+
+    int acquisti = cli->num_oggetti;
+    int tipo_spesa;
+    if(acquisti <= acquisti_leggeri){
+        tipo_spesa = selettiva_leggera;
+    }else if(acquisti_medi < acquisti && acquisti <= max_acquisti){
+        tipo_spesa = selettiva_media;
+    }else{
+        tipo_spesa = selettiva_pesante;
+    }
+
+    //fino a 100 file selezionabili...
+    struct fila_cassa **file_selezionabili[100];
+    int file_scelte = 0;
+
+    for(struct config_cassa_attive *cfga = config_attive; cfga != NULL; cfga = cfga->next){
+
+        if(cfga->configurazione_cassa->tipo == condivisa){
+            //aggiungi a selezionabile
+            file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
+            file_scelte++;
+        }
+
+        if(cfga->configurazione_cassa->tipo == selettiva && cfga->configurazione_cassa->sotto_tipo == tipo_spesa){
+            //aggiungi a selezionabile
+            //se si tratta di una configurazione selettiva con cassa condivisa, aggiungila
+            if(cfga->configurazione_cassa->fila_condivisa != NULL){
+                file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
+                file_scelte++;
+            }else{
+                //altrimenti tra le casse della configurazione scegli quella con meno fila
+                int min = 100000000;
+                for(struct casse *c = cfga->configurazione_cassa->casse; c != NULL; c = c->next){
+
+                    if(lunghezza_fila(c->fila_cassa) < min){
+                        file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
+                        file_scelte++;
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        if(cfga->configurazione_cassa->tipo == pseudo_casuale){
+            //aggiungi a selezionabile
+            int min = 100000000;
+            for(struct casse *c = cfga->configurazione_cassa->casse; c != NULL; c = c->next){
+
+                if(lunghezza_fila(c->fila_cassa) < min){
+                    file_selezionabili[file_scelte] =&(cfga->configurazione_cassa->fila_condivisa);
+                    file_scelte++;
+                    break;
+                }
+            }
+
+        }
+
+    }
+
+    file_selezionabili[file_scelte] = NULL;
+
+    //scorri tutte le file selezionabili e scegli quella con il minor numero di persone in fila
     //CLI->FILA_SCELTA = puntatore all'indirizzo di memoria
     // che ha il puntatpre alla fila scelta dalcliente
     //(indirizzo di memoria di config_cassa->fila_cassa)
 
-    //TODO
-    //MAGIc here
+    int i = 0;
+    int min = lunghezza_fila(*file_selezionabili[0]);
+
+    for(struct fila_cassa **fc = file_selezionabili[i]; fc != NULL; fc = file_selezionabili[i], ++i){
+
+        if(lunghezza_fila(*fc) < min){
+            cli->fila_scelta = fc;
+        }
+
+    }
 
 
 
@@ -66,6 +138,9 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     //aggiorno i tempi del cliente, una volta servito
     cli->servito_alle = e->tempo;
     cli->attesa_in_fila = cli->iniziato_a_servire - cli->in_fila;
+
+    //algoritmo di WELFORD per il calcolo dinamico del tempo medio di attesa
+    attesa_media_corrente = attesa_media_corrente + (float)1/arrivi_totali*(cli->attesa_in_fila - attesa_media_corrente)
 
     //imposta al cliente successivo il tempo in cui e' iniziato ad essere servito
     ((struct fila_cassa *)(cli->fila_scelta))->next->cliente_in_fila->iniziato_a_servire = e->tempo;
@@ -99,6 +174,7 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
             return -1;
         }
     }
+
     return 0;
 }
 
@@ -106,9 +182,7 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
 //inizia la simulazione
 void start(){
 
-    inizializza();
-
-    popola_arrivi();
+    popola_arrivi(giorno_corrente);
 
     struct evento *evento_corrente;
 
@@ -120,8 +194,17 @@ void start(){
         //se l'evento è l'arrivo di un cliente, crealo
         //e aggiungilo nella fila piu' adeguata (che sceglierebbe)
         if(evento_corrente->tipo == arrivo){
+            arrivi_totali++;
+
             struct cliente *cliente = genera_cliente(evento_corrente->tempo);
             scegli_fila(cliente);
+
+            //se il cliente ha deciso di abbandonare il negozio
+            //pre la troppa fila, non fare nulla
+            if(cliente->fila_scelta == NULL){
+                abbandoni++;
+                continue;
+            }
 
             //se il cliente e' il primo della fila, allora genera
             //l'evento del tempo di servizio

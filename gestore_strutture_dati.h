@@ -5,6 +5,16 @@
 #include "strutture_dati.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
+
+
+double Exponential(double media){
+
+    double rand = (double)random()/RAND_MAX;
+
+    return -media*log(1.0-rand);
+
+}
 
 
 //-------------------------------------------------------
@@ -15,9 +25,7 @@
 //a media.. vedere relazione
 int get_num_oggetti(){
 
-    //TODO chiamare esponenziale con media campionaria della relazione
-
-    return 5;
+    return (int)Exponential(Xn);
 }
 
 //un cliente è generato a partire da un evento di tipo arrivo,
@@ -132,7 +140,7 @@ void rimuovi_cassa(struct casse *casse){
 //funzione per la gestione delle configurazioni di cassa
 //-------------------------------------------------------
 
-//aggiunge una configurazione di un dato tipo alle configurazioni attive (VARIABILE GLOBALE in costanti.h)
+//aggiunge una configurazione di un dato tipo alle configurazioni attive (VARIABILE GLOBALE )
 //casse_casuali_in_mista rappresenta quante casse delle 'numero_casse' sono dedicate alla
 //configurazione pseudo casuale, il resto andranno alla selettiva.
 //TODO aggiungere alla relazione ?
@@ -211,7 +219,8 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
                 }
             }while(1);
 
-            nuova_configurazione->tipo = selettiva_leggera;
+            nuova_configurazione->tipo = selettiva;
+            nuova_configurazione->sotto_tipo = selettiva_leggera;
             nuova_configurazione->casse = genera_set_casse(legg);
             nuova_configurazione->fila_condivisa = NULL;
 
@@ -223,7 +232,8 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
                 current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
                 nuova_configurazione = current->configurazione_cassa;
 
-                nuova_configurazione->tipo = selettiva_media;
+                nuova_configurazione->tipo = selettiva;
+                nuova_configurazione->sotto_tipo = selettiva_media;
                 nuova_configurazione->casse = genera_set_casse(med);
                 nuova_configurazione->fila_condivisa = NULL;
             }
@@ -236,7 +246,8 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
                 current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
                 nuova_configurazione = current->configurazione_cassa;
 
-                nuova_configurazione->tipo = selettiva_pesante;
+                nuova_configurazione->tipo = selettiva;
+                nuova_configurazione->sotto_tipo = selettiva_pesante;
                 nuova_configurazione->casse = genera_set_casse(pes);
                 nuova_configurazione->fila_condivisa = NULL;
             }
@@ -271,7 +282,8 @@ void aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_cas
 
     if(num_casse_leggere != 0){
 
-        nuova_configurazione->tipo = selettiva_leggera;
+        nuova_configurazione->tipo = selettiva;
+        nuova_configurazione->sotto_tipo = selettiva_leggera;
         nuova_configurazione->casse = genera_set_casse(num_casse_leggere);
         if(fila_leggera_condivisa) {
             nuova_configurazione->fila_condivisa = crea_fila();
@@ -288,7 +300,8 @@ void aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_cas
         current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
         nuova_configurazione = current->configurazione_cassa;
 
-        nuova_configurazione->tipo = selettiva_media;
+        nuova_configurazione->tipo = selettiva;
+        nuova_configurazione->sotto_tipo = selettiva_media;
         nuova_configurazione->casse = genera_set_casse(num_casse_medie);
         if(fila_media_condivisa) {
             nuova_configurazione->fila_condivisa = crea_fila();
@@ -305,7 +318,8 @@ void aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_cas
         current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
         nuova_configurazione = current->configurazione_cassa;
 
-        nuova_configurazione->tipo = selettiva_pesante;
+        nuova_configurazione->tipo = selettiva;
+        nuova_configurazione->sotto_tipo = selettiva_pesante;
         nuova_configurazione->casse = genera_set_casse(num_casse_pesanti);
         if(fila_pesante_condivisa) {
             nuova_configurazione->fila_condivisa = crea_fila();
@@ -386,74 +400,85 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 //gerera ora di arrivo, usato per generare a monte tutti gli arrivi dei clienti,
 //e dunque tutti gli eventi di tipo 'arrivo'. Ciascun evento sarà associato ad un orario
 //che verrà usato per la creazione del cliente.
-int genera_arrivo(int ora){
+double genera_arrivo(int ora, int giorno_settimana){
 
     int media_arr = 0;
 
-    if(ore_6 < ora && ora <= ore_7){
-        media_arr = arrivi_6_7;
+    //TODO finire giorni
 
-    }else if(ore_7 < ora && ora <= ore_8){
-        media_arr = arrivi_7_8;
+    switch (giorno_settimana){
 
-    }else if(ore_8 < ora && ora <= ore_9){
-        media_arr = arrivi_8_9;
+        case lun:
+            if(ore_6 < ora && ora <= ore_7){
+                media_arr = arrivi_lun_6_7;
 
-    }else if(ore_9 < ora && ora <= ore_10){
-        media_arr = arrivi_9_10;
+            }else if(ore_7 < ora && ora <= ore_8){
+                media_arr = arrivi_lun_7_8;
 
-    }else if(ore_10 < ora && ora <= ore_11){
-        media_arr = arrivi_10_11;
+            }else if(ore_8 < ora && ora <= ore_9){
+                media_arr = arrivi_lun_8_9;
 
-    }else if(ore_11 < ora && ora <= ore_12){
-        media_arr = arrivi_11_12;
+            }else if(ore_9 < ora && ora <= ore_10){
+                media_arr = arrivi_lun_9_10;
 
-    }else if(ore_12 < ora && ora <= ore_13){
-        media_arr = arrivi_12_13;
+            }else if(ore_10 < ora && ora <= ore_11){
+                media_arr = arrivi_lun_10_11;
 
-    }else if(ore_13 < ora && ora <= ore_14){
-        media_arr = arrivi_13_14;
+            }else if(ore_11 < ora && ora <= ore_12){
+                media_arr = arrivi_lun_11_12;
 
-    }else if(ore_14 < ora && ora <= ore_15){
-        media_arr = arrivi_14_15;
+            }else if(ore_12 < ora && ora <= ore_13){
+                media_arr = arrivi_lun_12_13;
 
-    }else if(ore_15 < ora && ora <= ore_16){
-        media_arr = arrivi_15_16;
+            }else if(ore_13 < ora && ora <= ore_14){
+                media_arr = arrivi_lun_13_14;
 
-    }else if(ore_16 < ora && ora <= ore_17){
-        media_arr = arrivi_16_17;
+            }else if(ore_14 < ora && ora <= ore_15){
+                media_arr = arrivi_lun_14_15;
 
-    }else if(ore_17 < ora && ora <= ore_18){
-        media_arr = arrivi_17_18;
+            }else if(ore_15 < ora && ora <= ore_16){
+                media_arr = arrivi_lun_15_16;
 
-    }else if(ore_18 < ora && ora <= ore_19){
-        media_arr = arrivi_18_19;
+            }else if(ore_16 < ora && ora <= ore_17){
+                media_arr = arrivi_lun_16_17;
 
-    }else if(ore_19 < ora && ora <= ore_20){
-        media_arr = arrivi_19_20;
+            }else if(ore_17 < ora && ora <= ore_18){
+                media_arr = arrivi_lun_17_18;
 
-    }else if(ore_20 < ora && ora <= ore_21){
-        media_arr = arrivi_20_21;
+            }else if(ore_18 < ora && ora <= ore_19){
+                media_arr = arrivi_lun_18_19;
 
-    }else if(ore_21 < ora && ora <= ore_22){
-        media_arr = arrivi_21_22;
+            }else if(ore_19 < ora && ora <= ore_20){
+                media_arr = arrivi_lun_19_20;
 
+            }else if(ore_20 < ora && ora <= ore_21){
+                media_arr = arrivi_lun_20_21;
+
+            }else if(ore_21 < ora && ora <= ore_22){
+                media_arr = arrivi_lun_21_22;
+
+            }
+            break;
+
+
+        case mar:
+
+            break;
     }
 
-    //TODO chiamare esponenziale con media_arr
 
-    return 30;
+
+    return Exponential(media_arr);
 }
 
 void genera_evento_servito(struct cliente *c){
 
     int n = c->num_oggetti;
 
-    //TODO chiamare esponenziale in base al numero di oggetto del cliente
-    int tempo_di_servizio = 60;
+    double tempo_di_servizio = A*Exponential(Xn)+B;
 
-
-    aggiungi_evento(servito, tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
+    //passo l'approssimazione intera in secondi del tempo di servizio
+    aggiungi_evento(servito, (int)tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
 }
 
 

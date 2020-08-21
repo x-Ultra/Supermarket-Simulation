@@ -105,6 +105,11 @@ struct lista_eventi{
 #define selettiva_pesante 5
 #define selettiva_str "Selettiva"
 
+//margini destri di acquisti per casse selettive
+#define acquisti_leggeri 10
+#define acquisti_medi 20
+#define max_acquisti 30
+
 #define mista 6
 #define mista_str "Mista"
 
@@ -140,22 +145,33 @@ int T = opening_time;
 
 //TODO riempire con medie vere
 //media (dell'esponenziale) arrivo clienti
-#define arrivi_6_7 20
-#define arrivi_7_8 20
-#define arrivi_8_9 20
-#define arrivi_9_10 20
-#define arrivi_10_11 20
-#define arrivi_11_12 20
-#define arrivi_12_13 20
-#define arrivi_13_14 20
-#define arrivi_14_15 20
-#define arrivi_15_16 20
-#define arrivi_16_17 20
-#define arrivi_17_18 20
-#define arrivi_18_19 20
-#define arrivi_19_20 20
-#define arrivi_20_21 20
-#define arrivi_21_22 20
+#define arrivi_lun_6_7 20
+#define arrivi_lun_7_8 20
+#define arrivi_lun_8_9 20
+#define arrivi_lun_9_10 20
+#define arrivi_lun_10_11 20
+#define arrivi_lun_11_12 20
+#define arrivi_lun_12_13 20
+#define arrivi_lun_13_14 20
+#define arrivi_lun_14_15 20
+#define arrivi_lun_15_16 20
+#define arrivi_lun_16_17 20
+#define arrivi_lun_17_18 20
+#define arrivi_lun_18_19 20
+#define arrivi_lun_19_20 20
+#define arrivi_lun_20_21 20
+#define arrivi_lun_21_22 20
+
+//....
+
+//giorno della settimana
+#define lun 0
+#define mar 1
+#define mer 2
+#define gio 3
+#define ven 4
+#define sab 5
+#define dom 6
 
 //configurazioni di cassa attive
 struct config_cassa_attive *config_attive = NULL;
@@ -165,3 +181,29 @@ struct lista_eventi *eventi = NULL;
 
 //lista di tutti i clienti serviti
 struct fila_cassa *clienti_serviti = NULL;
+
+//per monitorare l'arrivo e gli abbandonidei clienti
+int arrivi_totali = 0;
+int abbandoni = 0;
+
+//massimo tempo di attesa (30 minuti ?)
+int max_attesa = 30*60;
+double attesa_media_corrente = 0;
+
+//media distribuzione esponenziale del num ogg cliente
+double Xn = 13.343702;
+
+//inizio del giorno
+int giorno_corrente = 0;
+
+//semi
+int SEED = 1234567;
+
+//l'idea è sottrarre al seme 1, per ogni simulazione (settimanale)
+//che viene fatta, in modo da applicare la replicazione
+int num_simulazioni = 10;
+
+//coefficienti estratti dalla retta di regressione
+//per stimare il tempo di servizio in base al numero di oggetti
+double A = 2.61;
+double B = 20.56;

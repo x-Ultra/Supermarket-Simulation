@@ -2,42 +2,42 @@
 // Created by ezio on 20/08/20.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "funzioni_per_simulazioni.h"
 
-struct list{
-    int num;
-    struct list *next;
-};
+//inizializza simulazione (eg. setta i semi, tipi di configurazioni di cassa in base ai cassieri....)
+//chiamata all'inizio di ogni nuovo giorno (ma num_simulazion cambia ogni settimana)
+void inizializza(int num_simulazione){
 
-struct list *l;
+    srandom(SEED-num_simulazione);
 
-void test(){
 
-    struct list *new = malloc(sizeof(struct list));
+    //creazione delle configurazioni di cassa
+    aggiungi_configurazione_cassa(condivisa, 1, 0);
 
-    new->num = 0;
-    new->next = l;
-
-    l = new;
 }
 
-int main(){
 
-    l = malloc(sizeof(struct list));
+int main() {
+
+    for(int i = 0; i < num_simulazioni; ++i) {
+
+        do{
+
+            inizializza(i);
+            start();
+
+            //aggiungere funzione che elabora i dati
 
 
-    l->num = 1;
-    l->next = malloc(sizeof(struct list));
 
-    l->next->num = 2;
-    l->next->next = NULL;
+            //per ora testo solo lunedi'
+            giorno_corrente++;
 
-    test();
+            break;
 
-    for(struct list *c = l; l != NULL; c = c->next){
-        printf("Num: %d\n", c->num);
+        }while(giorno_corrente < dom);
+
+        //per ora testo solo 1 simulazione
+        break;
     }
-
-    return 0;
 }
