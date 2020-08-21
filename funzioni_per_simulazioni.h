@@ -72,7 +72,7 @@ int scegli_fila(struct cliente *cli){
                 for(struct casse *c = cfga->configurazione_cassa->casse; c != NULL; c = c->next){
 
                     if(lunghezza_fila(c->fila_cassa) < min){
-                        file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
+                        file_selezionabili[file_scelte] = &(c->fila_cassa);
                         file_scelte++;
                         break;
                     }
@@ -87,7 +87,7 @@ int scegli_fila(struct cliente *cli){
             for(struct casse *c = cfga->configurazione_cassa->casse; c != NULL; c = c->next){
 
                 if(lunghezza_fila(c->fila_cassa) < min){
-                    file_selezionabili[file_scelte] =&(cfga->configurazione_cassa->fila_condivisa);
+                    file_selezionabili[file_scelte] = &(c->fila_cassa);;
                     file_scelte++;
                     break;
                 }
@@ -100,20 +100,23 @@ int scegli_fila(struct cliente *cli){
     file_selezionabili[file_scelte] = NULL;
 
     //scorri tutte le file selezionabili e scegli quella con il minor numero di persone in fila
-    //CLI->FILA_SCELTA = puntatore all'indirizzo di memoria
-    // che ha il puntatpre alla fila scelta dalcliente
-    //(indirizzo di memoria di config_cassa->fila_cassa)
-
     int i = 0;
     int min = lunghezza_fila(*file_selezionabili[0]);
+    int scelta = 0;
 
     for(struct fila_cassa **fc = file_selezionabili[i]; fc != NULL; fc = file_selezionabili[i], ++i){
 
-        if(lunghezza_fila(*fc) < min){
-            cli->fila_scelta = fc;
+        if(lunghezza_fila(*fc) <= min){
+            //cli->fila_scelta = fc;
+            //((struct fila_cassa *)*fc)->cliente_in_fila = cli;
+            scelta = i;
+
         }
 
     }
+
+    cli->fila_scelta = file_selezionabili[scelta-1];
+    ((struct fila_cassa *)*file_selezionabili[scelta-1])->cliente_in_fila = cli;
 
 
 
@@ -184,9 +187,7 @@ void start(){
 
     popola_arrivi(giorno_corrente);
 
-    stampa_tutti_eventi();
-
-
+    //stampa_tutti_eventi();
 
     struct evento *evento_corrente;
 
@@ -194,14 +195,18 @@ void start(){
     for(struct lista_eventi *e = eventi; e != NULL;  e = e->next){
         evento_corrente = e->evento;
 
-
         //se l'evento è l'arrivo di un cliente, crealo
         //e aggiungilo nella fila piu' adeguata (che sceglierebbe)
         if(evento_corrente->tipo == arrivo){
             arrivi_totali++;
 
             struct cliente *cliente = genera_cliente(evento_corrente->tempo);
+
             scegli_fila(cliente);
+
+            info_su_configurazioni_attive();
+
+            return;
 
             //se il cliente ha deciso di abbandonare il negozio
             //pre la troppa fila, non fare nulla
@@ -228,5 +233,7 @@ void start(){
         }
 
     }
+
+    printf("Fine\n");
 
 }

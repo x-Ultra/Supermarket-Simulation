@@ -4,7 +4,6 @@
 
 #include "strutture_dati.h"
 #include <math.h>
-#include <stdio.h>
 #include <string.h>
 
 double Exponential(double media){
@@ -63,9 +62,14 @@ int aggiungi_cliente_infila(struct fila_cassa *fila, struct cliente *cli){
 int lunghezza_fila(struct fila_cassa *fila){
 
     int l = 0;
+    struct fila_cassa *f = fila;
 
-    for(struct fila_cassa *f = fila; f->cliente_in_fila != NULL; f = f->next ){
+    while(f->cliente_in_fila != NULL){
         l++;
+        if(f->next == NULL){
+            break;
+        }
+        f = f->next;
     }
 
     return l;
