@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include <stdio.h>
 
 //cliente
 struct cliente{
@@ -101,8 +102,11 @@ struct lista_eventi{
 
 #define selettiva 2
 #define selettiva_leggera 3
+#define selettiva_leggera_str "Leggera"
 #define selettiva_media 4
+#define selettiva_media_str "Media"
 #define selettiva_pesante 5
+#define selettiva_pesante_str "Pesante"
 #define selettiva_str "Selettiva"
 
 //margini destri di acquisti per casse selettive

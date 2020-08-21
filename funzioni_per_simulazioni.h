@@ -2,10 +2,6 @@
 // Created by ezio on 20/08/20.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "costanti.h"
-#include "strutture_dati.h"
 #include "gestore_strutture_dati.h"
 
 
@@ -15,7 +11,8 @@ void popola_arrivi(int giorno_settimana){
     int arr;
     while(T < closing_time){
 
-        arr = genera_arrivo(T, giorno_settimana);
+
+        arr = (int)genera_arrivo(T, giorno_settimana);
 
         //aggiorno il tempo
         T = T + arr;
@@ -140,13 +137,13 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     cli->attesa_in_fila = cli->iniziato_a_servire - cli->in_fila;
 
     //algoritmo di WELFORD per il calcolo dinamico del tempo medio di attesa
-    attesa_media_corrente = attesa_media_corrente + (float)1/arrivi_totali*(cli->attesa_in_fila - attesa_media_corrente)
+    attesa_media_corrente = attesa_media_corrente + (float)1/arrivi_totali*(cli->attesa_in_fila - attesa_media_corrente);
 
     //imposta al cliente successivo il tempo in cui e' iniziato ad essere servito
-    ((struct fila_cassa *)(cli->fila_scelta))->next->cliente_in_fila->iniziato_a_servire = e->tempo;
+    ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila->iniziato_a_servire = e->tempo;
 
     //Scorri la fila, TODO vedere se corretto
-    *(cli->fila_scelta) = ((struct fila_cassa *)(cli->fila_scelta))->next;
+    *(cli->fila_scelta) = ((struct fila_cassa *)*(cli->fila_scelta))->next;
 
     //il cliente ha liberato la cassa di una fila condivisa, se ha scelto una config. con fila condivisa.
     //bisogna dunque fas scorrere la fila condivisa, se non vuota.

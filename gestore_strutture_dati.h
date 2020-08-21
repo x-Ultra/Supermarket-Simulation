@@ -3,17 +3,15 @@
 //
 
 #include "strutture_dati.h"
-#include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
-
+#include <stdio.h>
+#include <string.h>
 
 double Exponential(double media){
 
     double rand = (double)random()/RAND_MAX;
 
     return -media*log(1.0-rand);
-
 }
 
 
@@ -164,40 +162,48 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
         aggiungi_configurazione_cassa(pseudo_casuale, casse_casuali_in_mista, -1);
         aggiungi_configurazione_cassa(selettiva, numero_casse-casse_casuali_in_mista, -1);
 
+        printf("Configurazione di cassa mista aggiunta\n");
+
         return 0;
 
     }
 
-    struct config_cassa_attive *current = config_attive;
+    struct config_cassa_attive **current = &config_attive;
 
-    if(current != NULL) {
+    if(*current != NULL) {
         do{
-            current = current->next;
-        }while(current != NULL);
+            current = &(((struct config_cassa_attive *)*current)->next);
+        }while(*current != NULL);
     }
 
-    current = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
-    current->next = NULL;
-    current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-    struct config_cassa *nuova_configurazione = current->configurazione_cassa;
+    *current = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
+
+    ((struct config_cassa_attive *)*current)->next = NULL;
+    ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+    struct config_cassa **nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
+
 
     int legg = 0, med = 0, pes = 0;
 
     switch(tipo){
         case condivisa:
 
-            nuova_configurazione->tipo = condivisa;
-            nuova_configurazione->casse = genera_set_casse(numero_casse);
-            nuova_configurazione->fila_condivisa = crea_fila();
+            ((struct config_cassa *)*nuova_configurazione)->tipo = condivisa;
+            ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(numero_casse);
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = crea_fila();
+
+            printf("Configurazione di cassa condivisa aggiunta\n");
 
             break;
         case pseudo_casuale:
 
             //gestire poi in modo che ogni cassa generata gestisca un cliente alla volta,
             //prelevandolo dalla fila condivisa
-            nuova_configurazione->tipo = condivisa;
-            nuova_configurazione->casse = genera_set_casse(numero_casse);
-            nuova_configurazione->fila_condivisa = NULL;
+            ((struct config_cassa *)*nuova_configurazione)->tipo = pseudo_casuale;
+            ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(numero_casse);
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
+
+            printf("Configurazione di cassa pseudo-casuale aggiunta\n");
 
             break;
 
@@ -219,37 +225,43 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
                 }
             }while(1);
 
-            nuova_configurazione->tipo = selettiva;
-            nuova_configurazione->sotto_tipo = selettiva_leggera;
-            nuova_configurazione->casse = genera_set_casse(legg);
-            nuova_configurazione->fila_condivisa = NULL;
+            ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
+            ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_leggera;
+            ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(legg);
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
+
+            printf("Configurazione di cassa selettiva-leggera aggiunta\n");
 
             if(med > 0) {
-                current->next = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
-                current = current->next;
+                (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
+                current = &(((struct config_cassa_attive *)*current)->next);
 
-                current->next = NULL;
-                current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-                nuova_configurazione = current->configurazione_cassa;
+                ((struct config_cassa_attive *)*current)->next = NULL;
+                ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+                nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
 
-                nuova_configurazione->tipo = selettiva;
-                nuova_configurazione->sotto_tipo = selettiva_media;
-                nuova_configurazione->casse = genera_set_casse(med);
-                nuova_configurazione->fila_condivisa = NULL;
+                ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
+                ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_media;
+                ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(med);
+                ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
+
+                printf("Configurazione di cassa selettiva-media aggiunta\n");
             }
 
             if(pes > 0){
-                current->next = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
-                current = current->next;
+                (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
+                current = &(((struct config_cassa_attive *)*current)->next);
 
-                current->next = NULL;
-                current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-                nuova_configurazione = current->configurazione_cassa;
+                ((struct config_cassa_attive *)*current)->next = NULL;
+                ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+                nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
 
-                nuova_configurazione->tipo = selettiva;
-                nuova_configurazione->sotto_tipo = selettiva_pesante;
-                nuova_configurazione->casse = genera_set_casse(pes);
-                nuova_configurazione->fila_condivisa = NULL;
+                ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
+                ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_pesante;
+                ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(med);
+                ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
+
+                printf("Configurazione di cassa selettiva-pesante aggiunta\n");
             }
             break;
 
@@ -264,69 +276,72 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
 //Funzione che permette di introdurre una cassa selettiva con specifiche a grana fina, ovvero (eg.) possibilità di inserire
 //3 casse leggere con una fila condivisa e 2 pesanti con file separate ecc....
 //qui ci si può sbizzarrire nella fase di sperimentazione
-void aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_casse_medie, int num_casse_pesanti,
+int aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_casse_medie, int num_casse_pesanti,
                                                 int fila_leggera_condivisa, int fila_media_condivisa, int fila_pesante_condivisa){
 
-    struct config_cassa_attive *current = config_attive;
+    struct config_cassa_attive **current = &config_attive;
 
-    if(current != NULL) {
+    if(*current != NULL) {
         do{
-            current = current->next;
-        }while(current != NULL);
+            current = &(((struct config_cassa_attive *)*current)->next);
+        }while(*current != NULL);
     }
 
-    current = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
-    current->next = NULL;
-    current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-    struct config_cassa *nuova_configurazione = current->configurazione_cassa;
+    *current = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
+
+    ((struct config_cassa_attive *)*current)->next = NULL;
+    ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+    struct config_cassa **nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
 
     if(num_casse_leggere != 0){
 
-        nuova_configurazione->tipo = selettiva;
-        nuova_configurazione->sotto_tipo = selettiva_leggera;
-        nuova_configurazione->casse = genera_set_casse(num_casse_leggere);
+        ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
+        ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_leggera;
+        ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(num_casse_leggere);
         if(fila_leggera_condivisa) {
-            nuova_configurazione->fila_condivisa = crea_fila();
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = crea_fila();
         }else {
-            nuova_configurazione->fila_condivisa = NULL;
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
         }
     }
 
     if(num_casse_medie != 0){
-        current->next = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
-        current = current->next;
+        (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
+        current = &(((struct config_cassa_attive *)*current)->next);
 
-        current->next = NULL;
-        current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-        nuova_configurazione = current->configurazione_cassa;
+        ((struct config_cassa_attive *)*current)->next = NULL;
+        ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+        nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
 
-        nuova_configurazione->tipo = selettiva;
-        nuova_configurazione->sotto_tipo = selettiva_media;
-        nuova_configurazione->casse = genera_set_casse(num_casse_medie);
+        ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
+        ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_media;
+        ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(num_casse_medie);
         if(fila_media_condivisa) {
-            nuova_configurazione->fila_condivisa = crea_fila();
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = crea_fila();
         }else {
-            nuova_configurazione->fila_condivisa = NULL;
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
         }
     }
 
     if(num_casse_pesanti != 0){
-        current->next = (struct config_cassa_attive *)malloc(sizeof(struct config_cassa_attive));
-        current = current->next;
+        (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
+        current = &(((struct config_cassa_attive *)*current)->next);
 
-        current->next = NULL;
-        current->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-        nuova_configurazione = current->configurazione_cassa;
+        ((struct config_cassa_attive *)*current)->next = NULL;
+        ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+        nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
 
-        nuova_configurazione->tipo = selettiva;
-        nuova_configurazione->sotto_tipo = selettiva_pesante;
-        nuova_configurazione->casse = genera_set_casse(num_casse_pesanti);
+        ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
+        ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_pesante;
+        ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(num_casse_pesanti);
         if(fila_pesante_condivisa) {
-            nuova_configurazione->fila_condivisa = crea_fila();
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = crea_fila();
         }else {
-            nuova_configurazione->fila_condivisa = NULL;
+            ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
         }
     }
+
+    return 0;
 
 }
 
@@ -475,7 +490,7 @@ void genera_evento_servito(struct cliente *c){
 
     int n = c->num_oggetti;
 
-    double tempo_di_servizio = A*Exponential(Xn)+B;
+    double tempo_di_servizio = A*n+B;
 
     //passo l'approssimazione intera in secondi del tempo di servizio
     aggiungi_evento(servito, (int)tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
@@ -497,6 +512,14 @@ char *tipo_config(int tipo){
             return pseudo_casuale_str;
         case condivisa:
             return condivisa_str;
+        case mista:
+            return mista_str;
+        case selettiva_leggera:
+            return selettiva_leggera_str;
+        case selettiva_media:
+            return selettiva_media_str;
+        case selettiva_pesante:
+            return selettiva_pesante_str;
         default:
             return "Non Registrata";
     }
@@ -508,7 +531,14 @@ void info_su_configurazioni_attive(){
     int i = 1;
     for(struct config_cassa_attive *current = config_attive; current != NULL; current = current->next){
         printf("Configurazioni attive:\n");
-        printf("%d]-%s\n", i, tipo_config(current->configurazione_cassa->tipo));
+
+        char *tipo_str = tipo_config(current->configurazione_cassa->tipo);
+
+        printf("%d]-%s\n", i, tipo_str);
+
+        if(strcmp(tipo_str, selettiva_str) == 0){
+            printf("Sottotipo: %s\n", tipo_config(current->configurazione_cassa->sotto_tipo));
+        }
 
         printf("Fila condivisa: ");
         if(current->configurazione_cassa->fila_condivisa == NULL) {
@@ -526,6 +556,8 @@ void info_su_configurazioni_attive(){
             j++;
             printf("Clienti in fila alla cassa '%d': %d\n", j, lunghezza_fila(fc->fila_cassa));
         }
+
+        i++;
 
     }
 }
