@@ -353,9 +353,9 @@ int aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_cass
 
 int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 
-    struct lista_eventi *current = eventi;
+    struct lista_eventi **current = &eventi;
 
-    struct evento *nuovo_evento =(struct evento *)malloc(sizeof(struct evento));
+    struct evento *nuovo_evento = (struct evento *)malloc(sizeof(struct evento));
     nuovo_evento->tipo = tipo;
     if(tipo == servito){
         nuovo_evento->fila = fila;
@@ -380,35 +380,58 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 
     do{
 
-        if(current->evento->tempo < ora_evento){
-            current = current->next;
-            if(current->next == NULL){
-                current->next = new_el;
-                new_el->prev = current;
+        //printf("Nel do\n");
+
+        if(((struct lista_eventi *)*current)->evento->tempo <= ora_evento){
+
+            //printf("Ora del nuovo evento maggiore del corrente\n");
+
+            if(((struct lista_eventi *)*current)->next == NULL){
+
+                //printf("Arrivato all'ultimo evento\n");
+
+                ((struct lista_eventi *)*current)->next = new_el;
+                new_el->prev = ((struct lista_eventi *)*current);
 
                 return 0;
             }else{
+
+                current = &((struct lista_eventi *)*current)->next;
+                //printf("Continuo\n");
+
                 continue;
             }
         }else{
+
+            //printf("Ora del nuovo evento minore del corrente\n");
+
             //caso in cui lo devo inserire in testa.
-            if(current->prev == NULL){
-                new_el->next = current;
-                current->prev = new_el;
+            if(((struct lista_eventi *)*current)->prev == NULL){
+
+                //printf("Inserisco in testa\n");
+
+                new_el->next = ((struct lista_eventi *)*current);
+                ((struct lista_eventi *)*current)->prev = new_el;
+
                 eventi = new_el;
 
                 return 0;
             //caso in cui lo devo inserire in mezzo.
             }else{
-                current->prev->next = new_el;
-                new_el->next = current;
-                current->prev = new_el;
-                new_el->prev = current->prev;
+
+                //printf("Inserisco in mezzo\n");
+
+                ((struct lista_eventi *)*current)->prev->next = new_el;
+                new_el->next = ((struct lista_eventi *)*current);
+                ((struct lista_eventi *)*current)->prev = new_el;
+                new_el->prev = ((struct lista_eventi *)*current)->prev;
 
                 return 0;
             }
         }
     }while(1);
+
+
 
 }
 
@@ -424,7 +447,7 @@ double genera_arrivo(int ora, int giorno_settimana){
     switch (giorno_settimana){
 
         case lun:
-            if(ore_6 < ora && ora <= ore_7){
+            if(ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_lun_6_7;
 
             }else if(ore_7 < ora && ora <= ore_8){
@@ -480,8 +503,6 @@ double genera_arrivo(int ora, int giorno_settimana){
 
             break;
     }
-
-
 
     return Exponential(media_arr);
 }
@@ -580,8 +601,41 @@ char* tipo_evento_str(int tipo){
 
 char *secondi_ora(int secondi){
 
-    //TODO
-    return "8:00";
+    int ora = secondi/(60*60);
+    int minuti = (secondi-ora*60*60)/60;
+    int secs = secondi-ora*60*60-minuti*60;
+
+
+    char *ora_str = malloc(3);
+    char *min_str = malloc(3);
+    char *sec_str = malloc(3);
+    char *all_str = malloc(10);
+
+    if(minuti == 0){
+        sprintf(min_str, "00");
+    }else if(minuti < 10){
+        sprintf(min_str, "0%d", minuti);
+    }else{
+        sprintf(min_str, "%d", minuti);
+    }
+
+    if(secs == 0){
+        sprintf(sec_str, "00");
+    }else if(secs < 10){
+        sprintf(sec_str, "0%d", secs);
+    }else{
+        sprintf(sec_str, "%d", secs);
+    }
+
+    if(ora < 10){
+        sprintf(ora_str, "0%d", ora);
+    }else{
+        sprintf(ora_str, "%d", ora);
+    }
+
+    sprintf(all_str, "%s:%s:%s", ora_str, min_str, sec_str);
+
+    return all_str;
 }
 
 

@@ -28,8 +28,8 @@ int main() {
         do{
             inizializza(i);
             printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
-            info_su_configurazioni_attive();
-            sleep(3);
+            //info_su_configurazioni_attive();
+            //sleep(3);
 
 
             start();

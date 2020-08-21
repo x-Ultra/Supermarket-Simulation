@@ -3,18 +3,19 @@
 //
 
 #include "gestore_strutture_dati.h"
-
+#include <unistd.h>
 
 //genera tutti gli eventi di tipo arrivo (dei clienti)
 void popola_arrivi(int giorno_settimana){
 
     int arr;
     printf("Popolamento degli arrivi\n");
+
+    T = opening_time;
     while(T < closing_time){
 
 
         arr = (int)genera_arrivo(T, giorno_settimana);
-
         //aggiorno il tempo
         T = T + arr;
 
@@ -185,7 +186,7 @@ void start(){
 
     stampa_tutti_eventi();
 
-    return;
+
 
     struct evento *evento_corrente;
 
