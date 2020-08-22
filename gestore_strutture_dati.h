@@ -102,6 +102,7 @@ int aggiungi_cliente_infila(struct fila_cassa *fila, struct cliente *cli){
     fila->cliente_in_fila = cli;
     fila->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
     fila->next->cliente_in_fila = NULL;
+    fila->next->next = NULL;
 
     return 0;
 }
@@ -428,7 +429,46 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
     new_el->next = NULL;
     new_el->prev = NULL;
     new_el->evento = nuovo_evento;
+    //----------------------
+    //se la lista di eventi è vuota, mettilo per primo.
+    if(eventi == NULL) {
+        eventi = (struct lista_eventi *)malloc(sizeof(struct lista_eventi));
+        eventi->evento = nuovo_evento;
+        eventi->next = NULL;
+        eventi->prev = NULL;
 
+        return 0;
+    } else if(ora_evento <= eventi->evento->tempo) {
+        //aggiorna la testa della lista di eventi
+        new_el->next = eventi;
+        eventi->prev = new_el;
+        eventi = new_el;
+    } else {
+        //inseriscilo dopo la testa
+        struct lista_eventi *curr = eventi;
+        struct lista_eventi *prev = NULL;
+        while (curr != NULL && curr->evento->tempo < ora_evento) {
+            prev = curr;
+            curr = curr->next;
+        }
+        new_el->next = curr;
+        new_el->prev = prev;
+        prev->next = new_el;
+        if (curr != NULL) {
+            curr->prev = new_el;
+        }
+    }
+
+    return 0;
+
+    if(nuovo_evento->tipo == servito) {
+        stampa_num_eventi(20);
+        sleep(2);
+    }
+
+
+
+    //---------------------------
     do{
 
         //printf("Nel do\n");
@@ -444,7 +484,7 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
                 ((struct lista_eventi *)*current)->next = new_el;
                 new_el->prev = ((struct lista_eventi *)*current);
 
-                return 0;
+                break;
             }else{
 
                 current = &((struct lista_eventi *)*current)->next;
@@ -467,27 +507,38 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 
                 eventi = new_el;
 
-                return 0;
+                break;
             //caso in cui lo devo inserire in mezzo.
             }else{
 
                 //printf("Inserisco in mezzo\n");
-                //TODO in realta' non li inserisce, aggiusta qui.
+                //TODO aggiusta qui.
 
                 new_el->prev = ((struct lista_eventi *)*current)->prev;
                 new_el->next = ((struct lista_eventi *)*current);
 
+                ((struct lista_eventi *)*current)->prev->next = new_el;
                 ((struct lista_eventi *)*current)->prev = new_el;
 
-                stampa_num_eventi(10);
-                sleep(1);
 
-                return 0;
+                //printf("New: %s, %s, %s\n", secondi_ora(new_el->prev->evento->tempo), secondi_ora(new_el->evento->tempo), secondi_ora(new_el->next->evento->tempo));
+                //printf("Current: %s, %s, %s\n", secondi_ora(((struct lista_eventi *)*current)->prev->evento->tempo), secondi_ora(((struct lista_eventi *)*current)->evento->tempo), secondi_ora(((struct lista_eventi *)*current)->next->evento->tempo));
+                //stampa_num_eventi(10);
+                //sleep(1);
+
+                break;
             }
         }
 
     }while(1);
 
+
+    if(nuovo_evento->tipo == servito) {
+        stampa_num_eventi(20);
+        sleep(2);
+    }
+
+    return 0;
 
 
 }
@@ -571,7 +622,7 @@ void genera_evento_servito(struct cliente *c){
     double tempo_di_servizio = A*n+B;
 
 
-    printf("Genrando evento servito, %s\n", secondi_ora((int)tempo_di_servizio + c->iniziato_a_servire));
+    //printf("Genrando evento servito, %s\n", secondi_ora((int)tempo_di_servizio + c->iniziato_a_servire));
 
     //passo l'approssimazione intera in secondi del tempo di servizio
     aggiungi_evento(servito, (int)tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
@@ -680,6 +731,11 @@ void stampa_num_eventi(int num){
 
 }
 
+void stampa_evento(struct evento *e){
+
+    printf("[-] - %s - %s\n", tipo_evento_str(e->tipo), secondi_ora(e->tempo));
+
+}
 
 
 

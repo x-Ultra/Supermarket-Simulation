@@ -48,8 +48,10 @@ int scegli_fila(struct cliente *cli){
         tipo_spesa = selettiva_pesante;
     }
 
-    //fino a 100 file selezionabili...
+    //fino a 100 file selezionabili e altrettante configurazioni di cassa
     struct fila_cassa **file_selezionabili[100];
+    struct config_cassa **config_selezionabili[100];
+
     int file_scelte = 0;
 
     for(struct config_cassa_attive *cfga = config_attive; cfga != NULL; cfga = cfga->next){
@@ -57,7 +59,9 @@ int scegli_fila(struct cliente *cli){
         if(cfga->configurazione_cassa->tipo == condivisa){
             //aggiungi a selezionabile
             file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
+            config_selezionabili[file_scelte] = &(cfga->configurazione_cassa);
             file_scelte++;
+            printf("Scelta fila condivisa\n");
         }
 
         if(cfga->configurazione_cassa->tipo == selettiva && cfga->configurazione_cassa->sotto_tipo == tipo_spesa){
@@ -65,7 +69,9 @@ int scegli_fila(struct cliente *cli){
             //se si tratta di una configurazione selettiva con cassa condivisa, aggiungila
             if(cfga->configurazione_cassa->fila_condivisa != NULL){
                 file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
+                config_selezionabili[file_scelte] = &(cfga->configurazione_cassa);
                 file_scelte++;
+                printf("Scelta fila condivisa selettiva\n");
             }else{
                 //altrimenti tra le casse della configurazione scegli quella con meno fila
                 int min = 100000000;
@@ -73,11 +79,12 @@ int scegli_fila(struct cliente *cli){
 
                     if(lunghezza_fila(c->fila_cassa) < min){
                         file_selezionabili[file_scelte] = &(c->fila_cassa);
+                        config_selezionabili[file_scelte] = &(cfga->configurazione_cassa);
                         file_scelte++;
                         break;
                     }
                 }
-
+                printf("Scelta fila selettiva...\n");
             }
         }
 
@@ -87,17 +94,20 @@ int scegli_fila(struct cliente *cli){
             for(struct casse *c = cfga->configurazione_cassa->casse; c != NULL; c = c->next){
 
                 if(lunghezza_fila(c->fila_cassa) < min){
-                    file_selezionabili[file_scelte] = &(c->fila_cassa);;
+                    file_selezionabili[file_scelte] = &(c->fila_cassa);
+                    config_selezionabili[file_scelte] = &(cfga->configurazione_cassa);
                     file_scelte++;
                     break;
                 }
             }
+            printf("Scelta fila pseudo casuale...\n");
 
         }
 
     }
 
     file_selezionabili[file_scelte] = NULL;
+    config_selezionabili[file_scelte] = NULL;
 
     //scorri tutte le file selezionabili e scegli quella con il minor numero di persone in fila
     int i = 0;
@@ -110,12 +120,18 @@ int scegli_fila(struct cliente *cli){
             //cli->fila_scelta = fc;
             //((struct fila_cassa *)*fc)->cliente_in_fila = cli;
             scelta = i;
-
         }
 
     }
 
+    //TODO far avanzare il cliente dalla fila condivisa alla cassa, SE e' presente una libera.
+
+    //TODO mettere cliente alla fine della fila
+
+    cli->config_scelta = config_selezionabili[scelta-1];
+
     cli->fila_scelta = file_selezionabili[scelta-1];
+
     ((struct fila_cassa *)*file_selezionabili[scelta-1])->cliente_in_fila = cli;
 
     return 0;
@@ -127,14 +143,15 @@ int scegli_fila(struct cliente *cli){
 int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
 
     //servi il cliente, aggiungendolo nei clienti serviti
-    struct fila_cassa *fc = clienti_serviti;
-    while(fc != NULL){
-        fc = fc->next;
+    struct fila_cassa **fc = &clienti_serviti;
+    while(*fc != NULL){
+
+        fc = &((struct fila_cassa *)*fc)->next;
     }
 
-    fc = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
-    fc->next = NULL;
-    fc->cliente_in_fila = cli;
+    *fc = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
+    ((struct fila_cassa *)*fc)->next = NULL;
+    ((struct fila_cassa *)*fc)->cliente_in_fila = cli;
 
     //aggiorno i tempi del cliente, una volta servito
     cli->servito_alle = e->tempo;
@@ -143,29 +160,48 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     //algoritmo di WELFORD per il calcolo dinamico del tempo medio di attesa
     attesa_media_corrente = attesa_media_corrente + (float)1/arrivi_totali*(cli->attesa_in_fila - attesa_media_corrente);
 
-    //imposta al cliente successivo il tempo in cui e' iniziato ad essere servito
-    ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila->iniziato_a_servire = e->tempo;
+    //imposta al cliente successivo il tempo in cui e' iniziato ad essere servito, se presente
+    if( ((struct fila_cassa *)*(cli->fila_scelta))->next != NULL){
+        ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila->iniziato_a_servire = e->tempo;
+    }else{
 
-    //Scorri la fila, TODO vedere se corretto
+        //se il cliente e' l'unico della fila, prima di avanzare, crea un posto libero.
+        ((struct fila_cassa *)*(cli->fila_scelta))->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
+        ((struct fila_cassa *)*(cli->fila_scelta))->next->next = NULL;
+        ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila = NULL;
+    }
+
+    //Scorri la fila, deve cambiare per tutti !, cambiamento visibile a tutti.
     *(cli->fila_scelta) = ((struct fila_cassa *)*(cli->fila_scelta))->next;
 
+
+    //TODO, il todo scritto in start()
     //il cliente ha liberato la cassa di una fila condivisa, se ha scelto una config. con fila condivisa.
     //bisogna dunque fas scorrere la fila condivisa, se non vuota.
-    if(cli->config_scelta->fila_condivisa != NULL){
-        if(lunghezza_fila(cli->config_scelta->fila_condivisa) > 0){
-            //fai andare alla cassa appena liberata,il primo cliente nella fila
+    if(((struct config_cassa *)*(cli->config_scelta))->fila_condivisa != NULL){
 
-            struct cliente *avanzante = cli->config_scelta->fila_condivisa->cliente_in_fila;
-            //TODO vedere se va bene, la fila condifisa deve cambiare per tutti, non solo per 'cli'
-            cli->config_scelta->fila_condivisa = cli->config_scelta->fila_condivisa->next;
+        if(lunghezza_fila(((struct config_cassa *)*(cli->config_scelta))->fila_condivisa) > 0){
+
+            //salvo il cliente che deve avanzare alle casse
+            struct cliente *avanzante = ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila;
+
+            //faccio avanzare la fila condivisa
+            ((struct config_cassa *)*cli->config_scelta)->fila_condivisa = ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->next;
+
+            //segno quando il cliente nella fila condivisa verra' iniziato a servire
+            ((struct config_cassa *)*cli->config_scelta)->fila_condivisa->cliente_in_fila->iniziato_a_servire = e->tempo;
 
             //metti il cliente avanzante alla prima cassa libera
+            for(struct casse *cassa_condivisa = ((struct config_cassa *)*(cli->config_scelta))->casse;
+                                                            cassa_condivisa->fila_cassa != NULL; cassa_condivisa = cassa_condivisa->next){
 
-            for(struct fila_cassa *cassa_condivisa = cli->config_scelta->casse->fila_cassa; cassa_condivisa != NULL;
-                                                                                cassa_condivisa = cassa_condivisa->next){
-                if(lunghezza_fila(cassa_condivisa) == 0){
+                //se trovo una cassa libera, acciongo il cliente.
+                if(cassa_condivisa->fila_cassa->cliente_in_fila != NULL){
 
-                    aggiungi_cliente_infila(cassa_condivisa, avanzante);
+                    aggiungi_cliente_infila(cassa_condivisa->fila_cassa, avanzante);
+
+                    //TODO aggiornare la sua nova fila, cosi' non funge mi sa
+                    avanzante->fila_scelta = &(cassa_condivisa->fila_cassa);
 
                     return 0;
                 }
@@ -193,6 +229,8 @@ void start(){
     for(struct lista_eventi *e = eventi; e != NULL;  e = e->next){
         evento_corrente = e->evento;
 
+
+
         //se l'evento è l'arrivo di un cliente, crealo
         //e aggiungilo nella fila piu' adeguata (che sceglierebbe)
         if(evento_corrente->tipo == arrivo){
@@ -212,11 +250,13 @@ void start(){
                 continue;
             }
 
-
-
+            //  Se e' il primo della fila, ma la fila e' condivisa,
+            //  non fare nulla. Sara' il primo cliente che libera una cassa
+            //  a falo avanzare a quella stessa cassa.
             //se il cliente e' il primo della fila, allora genera
             //l'evento del tempo di servizio
-            if(((struct fila_cassa *)*(cliente->fila_scelta))->cliente_in_fila == cliente){
+            if(((struct fila_cassa *)*(cliente->fila_scelta))->cliente_in_fila == cliente
+                    && ((struct config_cassa *)*(cliente->config_scelta))->fila_condivisa != ((struct fila_cassa *)*(cliente->fila_scelta))){
 
                 cliente->iniziato_a_servire = evento_corrente->tempo;
                 genera_evento_servito(cliente);
@@ -229,9 +269,18 @@ void start(){
         }else if(evento_corrente->tipo == servito){
 
             printf("Cliente in servizio\n");
-            sleep(1);
+
             servi_prossimo_cliente(evento_corrente->fila->cliente_in_fila, evento_corrente);
         }
+
+
+        stampa_evento(evento_corrente);
+        stampa_num_eventi(20);
+        printf("\n");
+        info_su_configurazioni_attive();
+        printf("\n");
+        sleep(2);
+
 
     }
 

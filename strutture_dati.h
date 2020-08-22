@@ -22,7 +22,7 @@ struct cliente{
     struct fila_cassa **fila_scelta;
 
     //la configurazione di cassa scelta
-    struct config_cassa *config_scelta;
+    struct config_cassa **config_scelta;
 };
 
 //fila, lista collegata di clienti
