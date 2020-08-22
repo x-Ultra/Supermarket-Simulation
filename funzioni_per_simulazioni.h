@@ -209,8 +209,9 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     //imposta al cliente successivo il tempo in cui e' iniziato ad essere servito, se presente
     if( ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila != NULL){
         ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila->iniziato_a_servire = e->tempo;
+        printf("1, %d\n", lunghezza_fila(((struct fila_cassa *)*(cli->fila_scelta))));
     }else{
-
+        printf("2\n");
         //se il cliente e' l'unico della fila, prima di avanzare, crea un posto libero.
         ((struct fila_cassa *)*(cli->fila_scelta))->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
         ((struct fila_cassa *)*(cli->fila_scelta))->next->next = NULL;
@@ -219,6 +220,8 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
 
     //Scorri la fila, deve cambiare per tutti !, cambiamento visibile a tutti.
     *(cli->fila_scelta) = ((struct fila_cassa *)*(cli->fila_scelta))->next;
+
+    printf("Lunghezza fila che il cliente ha lasciato: %d\n", lunghezza_fila(((struct fila_cassa *)*(cli->fila_scelta))));
 
 
     //TODO, il todo scritto in start()
@@ -232,24 +235,32 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
             struct cliente *avanzante = ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila;
 
             //segno quando il cliente nella fila condivisa verra' iniziato a servire
-            //info_su_configurazioni_attive();
-            //printf("Lunghezza della fila condivisa, quando si libera una cassa: %d\n", lunghezza_fila(((struct config_cassa *)*cli->config_scelta)->fila_condivisa));
+            info_su_configurazioni_attive();
             ((struct config_cassa *)*cli->config_scelta)->fila_condivisa->cliente_in_fila->iniziato_a_servire = e->tempo;
 
             //faccio avanzare la fila condivisa
             ((struct config_cassa *)*cli->config_scelta)->fila_condivisa = ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->next;
 
             //metti il cliente avanzante alla prima cassa libera
-            for(struct casse *cassa_condivisa = ((struct config_cassa *)*(cli->config_scelta))->casse;
-                                                            cassa_condivisa->fila_cassa != NULL; cassa_condivisa = cassa_condivisa->next){
+            for(struct casse **cassa_condivisa = &((struct config_cassa *)*(cli->config_scelta))->casse;
+                    ((struct casse *)*cassa_condivisa) != NULL; cassa_condivisa = &((struct casse *)*cassa_condivisa)->next){
 
                 //se trovo una cassa libera, acciongo il cliente.
-                if(cassa_condivisa->fila_cassa->cliente_in_fila != NULL){
+                if(((struct casse *)*cassa_condivisa)->fila_cassa->cliente_in_fila == NULL){
 
-                    aggiungi_cliente_infila(cassa_condivisa->fila_cassa, avanzante);
+                    printf("Un cliente ha avanzato dalla condivisa alla cassa\n");
 
-                    //TODO aggiornare la sua nova fila, cosi' non funge mi sa
-                    avanzante->fila_scelta = &(cassa_condivisa->fila_cassa);
+                    //aggiungi_cliente_infila(cassa_condivisa->fila_cassa, avanzante);
+
+                    //cassa_condivisa->fila_cassa->cliente_in_fila = avanzante;
+                    ((struct casse *)*cassa_condivisa)->fila_cassa->cliente_in_fila = avanzante;
+                    ((struct casse *)*cassa_condivisa)->fila_cassa->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
+                    ((struct casse *)*cassa_condivisa)->fila_cassa->next->next = NULL;
+                    ((struct casse *)*cassa_condivisa)->fila_cassa->next->cliente_in_fila = NULL;
+
+
+                    //TODO aggiornare la sua nova fila, cosi' non funge mi sa, infatti no.
+                    ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila->fila_scelta = &(((struct casse *)*cassa_condivisa)->fila_cassa);
 
                     return 0;
                 }

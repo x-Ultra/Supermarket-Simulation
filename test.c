@@ -13,7 +13,7 @@ void inizializza(int num_simulazione){
     srandom(SEED-num_simulazione);
 
     //creazione delle configurazioni di cassa
-    aggiungi_configurazione_cassa(condivisa, 2, 0);
+    aggiungi_configurazione_cassa(condivisa, 1, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 4, 0);
     //aggiungi_configurazione_cassa(mista, 4, 3);
 
