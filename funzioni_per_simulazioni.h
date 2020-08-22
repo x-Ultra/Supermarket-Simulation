@@ -118,8 +118,6 @@ int scegli_fila(struct cliente *cli){
     cli->fila_scelta = file_selezionabili[scelta-1];
     ((struct fila_cassa *)*file_selezionabili[scelta-1])->cliente_in_fila = cli;
 
-
-
     return 0;
 }
 
@@ -204,22 +202,23 @@ void start(){
 
             scegli_fila(cliente);
 
-            info_su_configurazioni_attive();
-
-            return;
+            printf("Nuovo cliente aggiunto in fila\n");
 
             //se il cliente ha deciso di abbandonare il negozio
             //pre la troppa fila, non fare nulla
             if(cliente->fila_scelta == NULL){
                 abbandoni++;
+                printf("Nuovo cliente ha abbandonato\n");
                 continue;
             }
 
+
+
             //se il cliente e' il primo della fila, allora genera
             //l'evento del tempo di servizio
-            if(((struct fila_cassa *)(cliente->fila_scelta))->cliente_in_fila == cliente){
-                cliente->iniziato_a_servire = evento_corrente->tempo;
+            if(((struct fila_cassa *)*(cliente->fila_scelta))->cliente_in_fila == cliente){
 
+                cliente->iniziato_a_servire = evento_corrente->tempo;
                 genera_evento_servito(cliente);
             }
 
@@ -229,6 +228,8 @@ void start(){
         //se l'evento è il servizio di un cliente
         }else if(evento_corrente->tipo == servito){
 
+            printf("Cliente in servizio\n");
+            sleep(1);
             servi_prossimo_cliente(evento_corrente->fila->cliente_in_fila, evento_corrente);
         }
 

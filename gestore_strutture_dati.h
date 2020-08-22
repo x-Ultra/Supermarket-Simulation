@@ -6,12 +6,59 @@
 #include <math.h>
 #include <string.h>
 
+void stampa_num_eventi(int num);
+
+//-------------------------------------------------------
+//funzioni utili
+//-------------------------------------------------------
+
 double Exponential(double media){
 
     double rand = (double)random()/RAND_MAX;
 
     return -media*log(1.0-rand);
 }
+
+
+char *secondi_ora(int secondi){
+
+    int ora = secondi/(60*60);
+    int minuti = (secondi-ora*60*60)/60;
+    int secs = secondi-ora*60*60-minuti*60;
+
+
+    char *ora_str = malloc(3);
+    char *min_str = malloc(3);
+    char *sec_str = malloc(3);
+    char *all_str = malloc(10);
+
+    if(minuti == 0){
+        sprintf(min_str, "00");
+    }else if(minuti < 10){
+        sprintf(min_str, "0%d", minuti);
+    }else{
+        sprintf(min_str, "%d", minuti);
+    }
+
+    if(secs == 0){
+        sprintf(sec_str, "00");
+    }else if(secs < 10){
+        sprintf(sec_str, "0%d", secs);
+    }else{
+        sprintf(sec_str, "%d", secs);
+    }
+
+    if(ora < 10){
+        sprintf(ora_str, "0%d", ora);
+    }else{
+        sprintf(ora_str, "%d", ora);
+    }
+
+    sprintf(all_str, "%s:%s:%s", ora_str, min_str, sec_str);
+
+    return all_str;
+}
+
 
 
 //-------------------------------------------------------
@@ -354,7 +401,7 @@ int aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_cass
 //-------------------------------------------------------
 //funzione per la gestione degli eventi
 //-------------------------------------------------------
-
+#include <unistd.h>
 int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 
     struct lista_eventi **current = &eventi;
@@ -388,7 +435,7 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 
         if(((struct lista_eventi *)*current)->evento->tempo <= ora_evento){
 
-            //printf("Ora del nuovo evento maggiore del corrente\n");
+            //printf("Ora del nuovo evento maggiore del corrente: (corrente) %s vs %s\n", secondi_ora(ora_evento), secondi_ora(((struct lista_eventi *)*current)->evento->tempo));
 
             if(((struct lista_eventi *)*current)->next == NULL){
 
@@ -407,7 +454,8 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
             }
         }else{
 
-            //printf("Ora del nuovo evento minore del corrente\n");
+            //printf("Ora del nuovo evento minore del corrente: (corrente) %s vs %s\n", secondi_ora(ora_evento), secondi_ora(((struct lista_eventi *)*current)->evento->tempo));
+
 
             //caso in cui lo devo inserire in testa.
             if(((struct lista_eventi *)*current)->prev == NULL){
@@ -424,15 +472,20 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
             }else{
 
                 //printf("Inserisco in mezzo\n");
+                //TODO in realta' non li inserisce, aggiusta qui.
 
-                ((struct lista_eventi *)*current)->prev->next = new_el;
-                new_el->next = ((struct lista_eventi *)*current);
-                ((struct lista_eventi *)*current)->prev = new_el;
                 new_el->prev = ((struct lista_eventi *)*current)->prev;
+                new_el->next = ((struct lista_eventi *)*current);
+
+                ((struct lista_eventi *)*current)->prev = new_el;
+
+                stampa_num_eventi(10);
+                sleep(1);
 
                 return 0;
             }
         }
+
     }while(1);
 
 
@@ -516,6 +569,9 @@ void genera_evento_servito(struct cliente *c){
     int n = c->num_oggetti;
 
     double tempo_di_servizio = A*n+B;
+
+
+    printf("Genrando evento servito, %s\n", secondi_ora((int)tempo_di_servizio + c->iniziato_a_servire));
 
     //passo l'approssimazione intera in secondi del tempo di servizio
     aggiungi_evento(servito, (int)tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
@@ -602,51 +658,21 @@ char* tipo_evento_str(int tipo){
 
 }
 
-
-char *secondi_ora(int secondi){
-
-    int ora = secondi/(60*60);
-    int minuti = (secondi-ora*60*60)/60;
-    int secs = secondi-ora*60*60-minuti*60;
-
-
-    char *ora_str = malloc(3);
-    char *min_str = malloc(3);
-    char *sec_str = malloc(3);
-    char *all_str = malloc(10);
-
-    if(minuti == 0){
-        sprintf(min_str, "00");
-    }else if(minuti < 10){
-        sprintf(min_str, "0%d", minuti);
-    }else{
-        sprintf(min_str, "%d", minuti);
-    }
-
-    if(secs == 0){
-        sprintf(sec_str, "00");
-    }else if(secs < 10){
-        sprintf(sec_str, "0%d", secs);
-    }else{
-        sprintf(sec_str, "%d", secs);
-    }
-
-    if(ora < 10){
-        sprintf(ora_str, "0%d", ora);
-    }else{
-        sprintf(ora_str, "%d", ora);
-    }
-
-    sprintf(all_str, "%s:%s:%s", ora_str, min_str, sec_str);
-
-    return all_str;
-}
-
-
 void stampa_tutti_eventi(){
 
     int i = 0;
     for(struct lista_eventi *le = eventi; le != NULL; le = le->next){
+
+        printf("[%d] - %s - %s\n", i, tipo_evento_str(le->evento->tipo), secondi_ora(le->evento->tempo));
+        i++;
+    }
+
+}
+
+void stampa_num_eventi(int num){
+
+    int i = 0;
+    for(struct lista_eventi *le = eventi; le != NULL && i < num; le = le->next){
 
         printf("[%d] - %s - %s\n", i, tipo_evento_str(le->evento->tipo), secondi_ora(le->evento->tempo));
         i++;
