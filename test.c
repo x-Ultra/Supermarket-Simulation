@@ -13,11 +13,27 @@ void inizializza(int num_simulazione){
     srandom(SEED-num_simulazione);
 
     //creazione delle configurazioni di cassa
-    aggiungi_configurazione_cassa(condivisa, 1, 0);
+    //Testato OK (singolarmente)
+    //aggiungi_configurazione_cassa(condivisa, 1, 0);
+    //aggiungi_configurazione_cassa(condivisa, 2, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 1, 0);
-    //aggiungi_configurazione_cassa(mista, 4, 3);
+    //aggiungi_configurazione_cassa(pseudo_casuale, 2, 0);
+    //aggiungi_configurazione_cassa(mista, 2, 1);
+    //aggiungi_configurazione_cassa(mista, 3, 1);
+    //aggiungi_configurazione_cassa(mista, 4, 1);
 
+    //Testato (a gruppi di configurazioni)
+    //leggera media pesante + 1 condivisa
+    //aggiungi_configurazione_cassa(mista, 3, 0);
+    //aggiungi_configurazione_cassa(condivisa, 1, 0);
+
+    //leggera media e pesante, di cui la media condivisa
     //aggiungi_configurazione_selettiva_custom(1, 1, 1, 0, 1, 0);
+
+    //leggera media e pesante, di cui la leggera condivisa e con 2 casse
+    aggiungi_configurazione_selettiva_custom(2, 1, 1, 1, 0, 0);
+
+    //sbizzarrirsi...
 }
 
 

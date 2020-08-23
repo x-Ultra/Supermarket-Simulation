@@ -69,7 +69,12 @@ char *secondi_ora(int secondi){
 //a media.. vedere relazione
 int get_num_oggetti(){
 
-    return (int)Exponential(Xn);
+    int exp = (int)Exponential(Xn);
+    if(exp > 1){
+        return exp;
+    }
+
+    return 1;
 }
 
 //un cliente è generato a partire da un evento di tipo arrivo,
@@ -215,7 +220,10 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
             return -1;
         }
 
-        aggiungi_configurazione_cassa(pseudo_casuale, casse_casuali_in_mista, -1);
+        if(casse_casuali_in_mista > 0){
+            aggiungi_configurazione_cassa(pseudo_casuale, casse_casuali_in_mista, -1);
+        }
+
         aggiungi_configurazione_cassa(selettiva, numero_casse-casse_casuali_in_mista, -1);
 
         printf("Configurazione di cassa mista aggiunta\n");
@@ -545,9 +553,6 @@ void genera_evento_servito(struct cliente *c){
 
     double tempo_di_servizio = A*n+B;
 
-
-    //printf("Genrando evento servito, %s\n", secondi_ora((int)tempo_di_servizio + c->iniziato_a_servire));
-
     //passo l'approssimazione intera in secondi del tempo di servizio
     aggiungi_evento(servito, (int)tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
 }
@@ -640,7 +645,7 @@ void info_su_configurazioni_attive(){
                     break;
                 }
 
-                printf("%d, ", temp->cliente_in_fila->id);
+                printf("%d (num.ogg:%d), ", temp->cliente_in_fila->id, temp->cliente_in_fila->num_oggetti);
 
                 temp = temp ->next;
 

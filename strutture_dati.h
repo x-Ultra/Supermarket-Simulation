@@ -26,9 +26,6 @@ struct cliente{
 
     //int id per debug
     int id;
-
-    //indicatore
-    int in_fila_condivisa;
 };
 
 //fila, lista collegata di clienti
