@@ -297,7 +297,7 @@ def plot_hour_transaction(day_filter):
 
 	for i in range(6, len(ratio), 2):
 		#print(float(ratio[i]), float(ratio[i+1]), (float(ratio[i])+float(ratio[i+1])))
-		print("%.2f" % (float((float(ratio[i])+float(ratio[i+1])))/2), end=" & ")
+		print("%.6f" % (float((float(ratio[i])+float(ratio[i+1])))/2), end=" & ")
 	print("")
 	plt.bar(hours, ratio)
 	
@@ -355,7 +355,7 @@ def plot_day_transaction():
 	plt.show()	
 
 
-"""
+
 for i in range(6, 23):
 	print(str(i)+":00 &", end=' ')
 print("")
@@ -390,7 +390,7 @@ for i in range(0, len(values)):
 		total += 1
 
 print(average / total)
-"""
+
 def plot_exponential(x_range, mu=0, sigma=1, cdf=False, **kwargs):
 	'''
     Plots the exponential distribution function for a given x range

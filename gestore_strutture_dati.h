@@ -202,7 +202,7 @@ void rimuovi_cassa(struct casse *casse){
 //aggiunge una configurazione di un dato tipo alle configurazioni attive (VARIABILE GLOBALE )
 //casse_casuali_in_mista rappresenta quante casse delle 'numero_casse' sono dedicate alla
 //configurazione pseudo casuale, il resto andranno alla selettiva.
-//TODO aggiungere alla relazione ?
+
 //usando tale funzione possiamo 'eliminare la configurazione di cassa mista', in quanto basterebbe aggiungere
 //una configurazione pseudocasuale e poi una selettiva. Potremmo addirittura fare configurazioni
 //non esposte nella relazione, come pseudocasuale + selettiva, pseudo casuale + random.....

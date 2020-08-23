@@ -30,15 +30,6 @@ void popola_arrivi(int giorno_settimana){
 //piu' favorevole (in base al suo numero di acquisti).
 int scegli_fila(struct cliente *cli, struct evento *e){
 
-    //se il tempo medio di attesa e' maggiore di una certa quantita, il cliente abbandona
-    if(attesa_media_corrente > max_attesa){
-        cli->fila_scelta = NULL;
-
-        return 0;
-    }
-
-    //cli->in_fila_condivisa = 0;
-
 
     int acquisti = cli->num_oggetti;
     int tipo_spesa;
@@ -119,11 +110,17 @@ int scegli_fila(struct cliente *cli, struct evento *e){
     for(struct fila_cassa **fc = file_selezionabili[i]; fc != NULL; fc = file_selezionabili[i], ++i){
 
         if(lunghezza_fila(*fc) <= min){
-            //cli->fila_scelta = fc;
-            //((struct fila_cassa *)*fc)->cliente_in_fila = cli;
             scelta = i;
         }
 
+    }
+
+    //se la fila scelta dal cliente (che sarebbe la sua migliore possibilita)
+    //ha unna lunghezza elevata, il cliente rinuncia agli acquisti
+    if(min > massima_lunghezza_fila_tollerata){
+        cli->fila_scelta = NULL;
+
+        return 0;
     }
 
     D(printf("Il cliente %d ha scelto la fila con id: %d\n",cli->id, ((struct fila_cassa *)*file_selezionabili[scelta-1])->id));
@@ -239,7 +236,9 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     cli->attesa_in_fila = cli->iniziato_a_servire - cli->in_fila;
 
     //algoritmo di WELFORD per il calcolo dinamico del tempo medio di attesa
-    attesa_media_corrente = attesa_media_corrente + (float)1/arrivi_totali*(cli->attesa_in_fila - attesa_media_corrente);
+    attesa_media_corrente = attesa_media_corrente + ((float)1/arrivi_totali)*(cli->attesa_in_fila - attesa_media_corrente);
+
+    slowdown_medio_corrente = slowdown_medio_corrente + ((float)1/arrivi_totali)*((float)(cli->attesa_in_fila+(cli->servito_alle-cli->iniziato_a_servire))/(cli->servito_alle-cli->iniziato_a_servire) - slowdown_medio_corrente);
 
     //imposta al cliente successivo il tempo in cui e' iniziato ad essere servito, se presente
     if( ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila != NULL){
@@ -391,7 +390,4 @@ void start(){
 
 
     }
-
-    printf("Fine\n");
-
 }

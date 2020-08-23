@@ -15,7 +15,7 @@ void inizializza(int num_simulazione){
     //creazione delle configurazioni di cassa
     //Testato OK (singolarmente)
     //aggiungi_configurazione_cassa(condivisa, 1, 0);
-    aggiungi_configurazione_cassa(condivisa, 2, 0);
+    //aggiungi_configurazione_cassa(condivisa, 4, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 1, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 2, 0);
     //aggiungi_configurazione_cassa(mista, 2, 1);
@@ -31,9 +31,22 @@ void inizializza(int num_simulazione){
     //aggiungi_configurazione_selettiva_custom(1, 1, 1, 0, 1, 0);
 
     //leggera media e pesante, di cui la leggera condivisa e con 2 casse
-    //aggiungi_configurazione_selettiva_custom(2, 1, 1, 1, 0, 0);
+    aggiungi_configurazione_selettiva_custom(2, 1, 1, 1, 0, 0);
 
-    //sbizzarrirsi...
+    //sbizzarrirsi...e automatizzare
+
+    //aggiungi_configurazione_cassa(condivisa, 3, 0);
+
+    //aggiungi_configurazione_cassa(pseudo_casuale, 3, 0);
+
+    //aggiungi_configurazione_selettiva_custom(3, 2, 1, 1, 0, 0);
+
+    //aggiungi_configurazione_cassa(pseudo_casuale, 6, 0);
+
+    //aggiungi_configurazione_cassa(condivisa, 6, 0);
+
+    //aggiungi_configurazione_selettiva_custom(1, 3, 1, 0, 1, 0);
+
 }
 
 
@@ -51,6 +64,12 @@ int main() {
 
             //per ora testo solo lunedi'
             giorno_corrente++;
+
+            printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n", giorno_corrente, secondi_ora((int)attesa_media_corrente), slowdown_medio_corrente);
+            printf("Abbandoni: %d\n", abbandoni);
+
+            //TODO per iniziare simulazioni vere inserire prima arrivi_giorno_ora veri, in strutture_dati.h
+            //  e finire funzione genera_arrivo().
 
             break;
 

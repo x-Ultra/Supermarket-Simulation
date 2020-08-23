@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define DEBUG 1
+//#define DEBUG 1
 
 #ifdef DEBUG
 #  define D(x) x
@@ -211,9 +211,11 @@ struct fila_cassa *clienti_serviti = NULL;
 int arrivi_totali = 0;
 int abbandoni = 0;
 
-//massimo tempo di attesa (30 minuti ?)
-int max_attesa = 30*60;
+//massimo lunghezza della fila
+int massima_lunghezza_fila_tollerata = 10;
 double attesa_media_corrente = 0;
+
+double slowdown_medio_corrente = 0;
 
 //media distribuzione esponenziale del num ogg cliente
 double Xn = 13.343702;
