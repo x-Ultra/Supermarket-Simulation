@@ -465,87 +465,6 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
     }
 
     return 0;
-
-    if(nuovo_evento->tipo == servito) {
-        stampa_num_eventi(20);
-        sleep(2);
-    }
-
-
-
-    //---------------------------
-    do{
-
-        //printf("Nel do\n");
-
-        if(((struct lista_eventi *)*current)->evento->tempo <= ora_evento){
-
-            //printf("Ora del nuovo evento maggiore del corrente: (corrente) %s vs %s\n", secondi_ora(ora_evento), secondi_ora(((struct lista_eventi *)*current)->evento->tempo));
-
-            if(((struct lista_eventi *)*current)->next == NULL){
-
-                //printf("Arrivato all'ultimo evento\n");
-
-                ((struct lista_eventi *)*current)->next = new_el;
-                new_el->prev = ((struct lista_eventi *)*current);
-
-                break;
-            }else{
-
-                current = &((struct lista_eventi *)*current)->next;
-                //printf("Continuo\n");
-
-                continue;
-            }
-        }else{
-
-            //printf("Ora del nuovo evento minore del corrente: (corrente) %s vs %s\n", secondi_ora(ora_evento), secondi_ora(((struct lista_eventi *)*current)->evento->tempo));
-
-
-            //caso in cui lo devo inserire in testa.
-            if(((struct lista_eventi *)*current)->prev == NULL){
-
-                //printf("Inserisco in testa\n");
-
-                new_el->next = ((struct lista_eventi *)*current);
-                ((struct lista_eventi *)*current)->prev = new_el;
-
-                eventi = new_el;
-
-                break;
-            //caso in cui lo devo inserire in mezzo.
-            }else{
-
-                //printf("Inserisco in mezzo\n");
-                //TODO aggiusta qui.
-
-                new_el->prev = ((struct lista_eventi *)*current)->prev;
-                new_el->next = ((struct lista_eventi *)*current);
-
-                ((struct lista_eventi *)*current)->prev->next = new_el;
-                ((struct lista_eventi *)*current)->prev = new_el;
-
-
-                //printf("New: %s, %s, %s\n", secondi_ora(new_el->prev->evento->tempo), secondi_ora(new_el->evento->tempo), secondi_ora(new_el->next->evento->tempo));
-                //printf("Current: %s, %s, %s\n", secondi_ora(((struct lista_eventi *)*current)->prev->evento->tempo), secondi_ora(((struct lista_eventi *)*current)->evento->tempo), secondi_ora(((struct lista_eventi *)*current)->next->evento->tempo));
-                //stampa_num_eventi(10);
-                //sleep(1);
-
-                break;
-            }
-        }
-
-    }while(1);
-
-
-    if(nuovo_evento->tipo == servito) {
-        stampa_num_eventi(20);
-        sleep(2);
-    }
-
-    return 0;
-
-
 }
 
 //gerera ora di arrivo, usato per generare a monte tutti gli arrivi dei clienti,
@@ -707,20 +626,28 @@ void info_su_configurazioni_attive(){
         int nc = numero_casse(current->configurazione_cassa->casse);
         printf("Numero di casse: %d\n", nc);
 
-        int j = 0;
+        //------------------
+        int j = 1;
 
-        for(struct casse *fc = current->configurazione_cassa->casse; fc != NULL; fc = fc->next){
-            if(j == 0){
-                printf("Clienti in fila alla cassa '%d': ", fc->fila_cassa->id);
-            }
+        for(struct casse *css = current->configurazione_cassa->casse; css != NULL; css = css->next){
 
-            if(lunghezza_fila(fc->fila_cassa) == 0){
-                printf("x");
-                break;
-            }
+            printf("Clienti in fila alla cassa '%d': ", j);
+            struct  fila_cassa *temp = css->fila_cassa;
+            do{
 
-            printf("%d, ", fc->fila_cassa->cliente_in_fila->id);
-            j++;
+                if(lunghezza_fila(temp) == 0){
+                    printf("x");
+                    break;
+                }
+
+                printf("%d, ", temp->cliente_in_fila->id);
+
+                temp = temp ->next;
+
+            }while(temp != NULL);
+            printf("\n");
+
+            ++j;
 
         }
 
