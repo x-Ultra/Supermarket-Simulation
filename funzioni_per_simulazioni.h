@@ -9,7 +9,7 @@
 void popola_arrivi(int giorno_settimana){
 
     int arr;
-    printf("Popolamento degli arrivi\n");
+    D(printf("Popolamento degli arrivi\n"));
 
     T = opening_time;
     while(T < closing_time){
@@ -22,7 +22,7 @@ void popola_arrivi(int giorno_settimana){
         //genero l'evento
         aggiungi_evento(arrivo, T, NULL);
     }
-    printf("Popolamento degli arrivi terminato\n");
+    D(printf("Popolamento degli arrivi terminato\n"));
 }
 
 
@@ -63,7 +63,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
             file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
             config_selezionabili[file_scelte] = &(cfga->configurazione_cassa);
             file_scelte++;
-            printf("Scelta fila condivisa\n");
+            D(printf("Scelta fila condivisa\n"));
         }
 
         if(cfga->configurazione_cassa->tipo == selettiva && cfga->configurazione_cassa->sotto_tipo == tipo_spesa){
@@ -73,7 +73,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
                 file_selezionabili[file_scelte] = &(cfga->configurazione_cassa->fila_condivisa);
                 config_selezionabili[file_scelte] = &(cfga->configurazione_cassa);
                 file_scelte++;
-                printf("Scelta fila condivisa selettiva\n");
+                D(printf("Scelta fila condivisa selettiva\n"));
             }else{
                 //altrimenti tra le casse della configurazione scegli quella con meno fila
                 int min = 100000000;
@@ -86,7 +86,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
                         continue;
                     }
                 }
-                printf("Scelta fila selettiva...\n");
+                D(printf("Scelta fila selettiva...\n"));
             }
         }
 
@@ -102,7 +102,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
                     continue;
                 }
             }
-            printf("Scelta fila pseudo casuale...\n");
+            D(printf("Scelta fila pseudo casuale...\n"));
 
         }
 
@@ -126,7 +126,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
 
     }
 
-    printf("Il cliente %d ha scelto la fila con id: %d\n",cli->id, ((struct fila_cassa *)*file_selezionabili[scelta-1])->id);
+    D(printf("Il cliente %d ha scelto la fila con id: %d\n",cli->id, ((struct fila_cassa *)*file_selezionabili[scelta-1])->id));
 
     cli->config_scelta = config_selezionabili[scelta-1];
 
@@ -148,12 +148,12 @@ int scegli_fila(struct cliente *cli, struct evento *e){
                 ((struct casse *)*cass)->fila_cassa->next->id = ((struct casse *)*cass)->fila_cassa->id;
                 ((struct casse *)*cass)->fila_cassa->next->cliente_in_fila = NULL;
 
-                printf("Il cliente %d ha avanzato dalla condivisa alla cassa con id: %d\n",cli->id, ((struct casse *)*cass)->fila_cassa->id);
+                D(printf("Il cliente %d ha avanzato dalla condivisa alla cassa con id: %d\n",cli->id, ((struct casse *)*cass)->fila_cassa->id));
                 //cli->in_fila_condivisa = 0;
 
                 cli->iniziato_a_servire = e->tempo;
                 genera_evento_servito(cli);
-                printf("Generato evento servito per il cliente %d, il fila %d\n", cli->id, ((struct fila_cassa *)*(cli->fila_scelta))->id);
+                D(printf("Generato evento servito per il cliente %d, il fila %d\n", cli->id, ((struct fila_cassa *)*(cli->fila_scelta))->id));
 
 
 
@@ -163,14 +163,14 @@ int scegli_fila(struct cliente *cli, struct evento *e){
             cass = &((struct casse *)*cass)->next;
         }
 
-        printf("Il cliente %d non ha avanzato dalla condivisa alla cassa perche non libere\n", cli->id);
+        D(printf("Il cliente %d non ha avanzato dalla condivisa alla cassa perche non libere\n", cli->id));
 
     }
 
 
     struct fila_cassa **fc = (struct fila_cassa **)file_selezionabili[scelta-1];
 
-    printf("Il cliente %d si sta per accodare in fondo alla fila con id: %d, lunga %d\n",cli->id, ((struct fila_cassa *)*file_selezionabili[scelta-1])->id, lunghezza_fila(((struct fila_cassa *)*file_selezionabili[scelta-1])));
+    D(printf("Il cliente %d si sta per accodare in fondo alla fila con id: %d, lunga %d\n",cli->id, ((struct fila_cassa *)*file_selezionabili[scelta-1])->id, lunghezza_fila(((struct fila_cassa *)*file_selezionabili[scelta-1]))));
 
     //se il c liente e' il primo di una fila 'normale' (non condivisa), genera evento servizio
     if( lunghezza_fila((struct fila_cassa *)*fc) == 0 && ((struct config_cassa *)*cli->config_scelta)->fila_condivisa == NULL){
@@ -188,7 +188,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
         //cli->in_fila_condivisa = 0;
         cli->iniziato_a_servire = e->tempo;
         genera_evento_servito(cli);
-        printf("Il cliente %d, ha trovato la fila %d libera\n", cli->id, ((struct fila_cassa *)*fc)->id);
+        D(printf("Il cliente %d, ha trovato la fila %d libera\n", cli->id, ((struct fila_cassa *)*fc)->id));
 
         return 0;
     }
@@ -205,7 +205,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
             ((struct fila_cassa *)*fc)->next->id = ((struct fila_cassa *)*fc)->id;
             ((struct fila_cassa *)*fc)->next->cliente_in_fila = NULL;
 
-            printf("Il cliente %d si e' accodato in fondo alla fila con id: %d\n",cli->id, ((struct fila_cassa *)*fc)->id);
+            D(printf("Il cliente %d si e' accodato in fondo alla fila con id: %d\n",cli->id, ((struct fila_cassa *)*fc)->id));
 
             return 0;
         }
@@ -250,24 +250,24 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
         //genero l'evento in quanto e' il primo della fila
         genera_evento_servito(((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila);
 
-        printf("1, %d\n", lunghezza_fila(((struct fila_cassa *)*(cli->fila_scelta))));
-        printf("Il cliente %d ha detto al cliente %d, nella fila %d che dopo e' il suo turno\n",cli->id,((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila->id, ((struct fila_cassa *)*(cli->fila_scelta))->id);
+        D(printf("1, %d\n", lunghezza_fila(((struct fila_cassa *)*(cli->fila_scelta)))));
+        D(printf("Il cliente %d ha detto al cliente %d, nella fila %d che dopo e' il suo turno\n",cli->id,((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila->id, ((struct fila_cassa *)*(cli->fila_scelta))->id));
 
     }else{
-        printf("2\n");
+        D(printf("2\n"));
         //se il cliente e' l'unico della fila, prima di avanzare, crea un posto libero.
         ((struct fila_cassa *)*(cli->fila_scelta))->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
         ((struct fila_cassa *)*(cli->fila_scelta))->next->next = NULL;
         ((struct fila_cassa *)*(cli->fila_scelta))->next->id = ((struct fila_cassa *)*(cli->fila_scelta))->id;
         ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila = NULL;
 
-        printf("Il cliente %d e' l'unico nella fila %d\n",cli->id, ((struct fila_cassa *)*(cli->fila_scelta))->id);
+        D(printf("Il cliente %d e' l'unico nella fila %d\n",cli->id, ((struct fila_cassa *)*(cli->fila_scelta))->id));
 
     }
 
     //Scorri la fila, deve cambiare per tutti !, cambiamento visibile a tutti.
     *(cli->fila_scelta) = ((struct fila_cassa *)*(cli->fila_scelta))->next;
-    printf("La fila %d scorre in avanti\n",((struct fila_cassa *)*(cli->fila_scelta))->id );
+    D(printf("La fila %d scorre in avanti\n",((struct fila_cassa *)*(cli->fila_scelta))->id));
 
     //il cliente ha liberato la cassa di una fila condivisa, se ha scelto una config. con fila condivisa.
     //bisogna dunque fas scorrere la fila condivisa, se non vuota.
@@ -275,17 +275,17 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
 
         if(lunghezza_fila(((struct config_cassa *)*(cli->config_scelta))->fila_condivisa) > 0){
 
-            printf("Il cliente %d fa avanzare la fila condivisa %d\n",cli->id, ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->id);
+            D(printf("Il cliente %d fa avanzare la fila condivisa %d\n",cli->id, ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->id));
 
             //salvo il cliente che deve avanzare alle casse
             struct cliente *avanzante = ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila;
 
-            printf("Il cliente %d avanza dalla condivisa alla cassa......\n",avanzante->id);
+            D(printf("Il cliente %d avanza dalla condivisa alla cassa......\n",avanzante->id));
 
             //segno quando il cliente nella fila condivisa verra' iniziato a servire
             ((struct config_cassa *)*cli->config_scelta)->fila_condivisa->cliente_in_fila->iniziato_a_servire = e->tempo;
 
-            printf("La fila condivisa %d, avanza\n",  ((struct config_cassa *)*cli->config_scelta)->fila_condivisa->id);
+            D(printf("La fila condivisa %d, avanza\n",  ((struct config_cassa *)*cli->config_scelta)->fila_condivisa->id));
 
             //metti il cliente avanzante alla prima cassa libera
             for(struct casse **cassa_condivisa = &((struct config_cassa *)*(cli->config_scelta))->casse;
@@ -294,7 +294,7 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
                 //se trovo una cassa libera, acciongo il cliente.
                 if(((struct casse *)*cassa_condivisa)->fila_cassa->cliente_in_fila == NULL){
 
-                    printf("...... %d\n", ((struct casse *)*cassa_condivisa)->fila_cassa->id);
+                    D(printf("...... %d\n", ((struct casse *)*cassa_condivisa)->fila_cassa->id));
 
                     //aggiungi_cliente_infila(cassa_condivisa->fila_cassa, avanzante);
 
@@ -309,7 +309,7 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
                     ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila->fila_scelta = &(((struct casse *)*cassa_condivisa)->fila_cassa);
 
                     //genero l'evento in quanto e' il primo della fila
-                    printf("Iniziato a servire: %d\n", ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila->iniziato_a_servire);
+                    D(printf("Iniziato a servire: %d\n", ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila->iniziato_a_servire));
                     genera_evento_servito(((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila);
 
                     //faccio infine avanzare la fila condivisa
@@ -329,7 +329,7 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
         if(((struct fila_cassa *)*(cli->fila_scelta))->cliente_in_fila != NULL){
             //altrimenti aggiorna la sua posizione e basta
             ((struct fila_cassa *)*(cli->fila_scelta))->cliente_in_fila->fila_scelta = (cli->fila_scelta);
-            printf("Ora il cliente %d si e' spostato nella fila %d lunga %d\n", ((struct fila_cassa *)*(cli->fila_scelta))->cliente_in_fila->id, (((struct fila_cassa *)*(cli->fila_scelta))->id), lunghezza_fila(*(((struct fila_cassa *)*(cli->fila_scelta)))->cliente_in_fila->fila_scelta));
+            D(printf("Ora il cliente %d si e' spostato nella fila %d lunga %d\n", ((struct fila_cassa *)*(cli->fila_scelta))->cliente_in_fila->id, (((struct fila_cassa *)*(cli->fila_scelta))->id), lunghezza_fila(*(((struct fila_cassa *)*(cli->fila_scelta)))->cliente_in_fila->fila_scelta)));
 
         }
     }
@@ -361,13 +361,13 @@ void start(){
             struct cliente *cliente = genera_cliente(evento_corrente->tempo);
             scegli_fila(cliente, evento_corrente);
 
-            printf("Nuovo cliente %d aggiunto in fila\n", cliente->id);
+            D(printf("Nuovo cliente %d aggiunto in fila\n", cliente->id));
 
             //se il cliente ha deciso di abbandonare il negozio
             //pre la troppa fila, non fare nulla
             if(cliente->fila_scelta == NULL){
                 abbandoni++;
-                printf("Nuovo cliente ha abbandonato\n");
+                D(printf("Nuovo cliente ha abbandonato\n"));
                 continue;
             }
 
@@ -375,19 +375,19 @@ void start(){
         //se l'evento è il servizio di un cliente
         }else if(evento_corrente->tipo == servito){
 
-            printf("Cliente in servizio nella coda %d\n", evento_corrente->fila->id);
+            D(printf("Cliente in servizio nella coda %d\n", evento_corrente->fila->id));
 
             servi_prossimo_cliente(evento_corrente->fila->cliente_in_fila, evento_corrente);
         }
 
 
-        printf("\n");
-        stampa_evento(evento_corrente);
-        printf("Media attesa attuale: %f\n", attesa_media_corrente);
-        //stampa_num_eventi(20);
-        info_su_configurazioni_attive();
-        printf("\n-----------------------------------------------------------------------\n");
-        sleep(2);
+        D(printf("\n"));
+        D(stampa_evento(evento_corrente));
+        D(printf("Media attesa attuale: %f\n", attesa_media_corrente));
+        //D(stampa_num_eventi(20));
+        D(info_su_configurazioni_attive());
+        D(printf("\n-----------------------------------------------------------------------\n"));
+        D(sleep(2));
 
 
     }

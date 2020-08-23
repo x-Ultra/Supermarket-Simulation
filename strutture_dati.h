@@ -5,6 +5,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define DEBUG 1
+
+#ifdef DEBUG
+#  define D(x) x
+#else
+#  define D(x)
+#endif
+
+int fake_printf( const char * format, ... )
+{
+    return 0;
+}
+
 //cliente
 struct cliente{
 

@@ -226,7 +226,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
 
         aggiungi_configurazione_cassa(selettiva, numero_casse-casse_casuali_in_mista, -1);
 
-        printf("Configurazione di cassa mista aggiunta\n");
+        D(printf("Configurazione di cassa mista aggiunta\n"));
 
         return 0;
 
@@ -256,7 +256,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
             ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(numero_casse);
             ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = crea_fila();
 
-            printf("Configurazione di cassa condivisa aggiunta\n");
+            D(printf("Configurazione di cassa condivisa aggiunta\n"));
 
             break;
         case pseudo_casuale:
@@ -267,7 +267,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
             ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(numero_casse);
             ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
 
-            printf("Configurazione di cassa pseudo-casuale aggiunta\n");
+            D(printf("Configurazione di cassa pseudo-casuale aggiunta\n"));
 
             break;
 
@@ -294,7 +294,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
             ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(legg);
             ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
 
-            printf("Configurazione di cassa selettiva-leggera aggiunta\n");
+            D(printf("Configurazione di cassa selettiva-leggera aggiunta\n"));
 
             if(med > 0) {
                 (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
@@ -309,7 +309,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
                 ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(med);
                 ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
 
-                printf("Configurazione di cassa selettiva-media aggiunta\n");
+                D(printf("Configurazione di cassa selettiva-media aggiunta\n"));
             }
 
             if(pes > 0){
@@ -325,7 +325,7 @@ int aggiungi_configurazione_cassa(int tipo, int numero_casse, int casse_casuali_
                 ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(med);
                 ((struct config_cassa *)*nuova_configurazione)->fila_condivisa = NULL;
 
-                printf("Configurazione di cassa selettiva-pesante aggiunta\n");
+                D(printf("Configurazione di cassa selettiva-pesante aggiunta\n"));
             }
             break;
 
