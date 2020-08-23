@@ -80,6 +80,8 @@ struct cliente* genera_cliente(int ora_evento_arrivo){
     cli->num_oggetti = get_num_oggetti();
     cli->in_fila = ora_evento_arrivo;
 
+    cli->id = arrivi_totali;
+
     return cli;
 }
 
@@ -93,6 +95,8 @@ struct fila_cassa *crea_fila(){
     struct fila_cassa *fc = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
     fc->cliente_in_fila = NULL;
     fc->next = NULL;
+    fc->id = file_ids;
+    file_ids ++;
 
     return fc;
 }
@@ -414,6 +418,7 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
     }
     nuovo_evento->tempo = ora_evento;
 
+
     //se la lista di eventi è vuota, mettilo per primo.
     if(eventi == NULL){
         eventi = (struct lista_eventi *)malloc(sizeof(struct lista_eventi));
@@ -677,17 +682,49 @@ void info_su_configurazioni_attive(){
             printf("NO\n");
         }else{
             printf("SI\n");
-            printf("Clienti in fila condivisa: %d\n", lunghezza_fila(current->configurazione_cassa->fila_condivisa));
+
+            int j = 0;
+            struct fila_cassa *fc = current->configurazione_cassa->fila_condivisa;
+            do{
+                if(j == 0){
+                    printf("Clienti in fila condivisa '%d': ", fc->id);
+                }
+
+                if(lunghezza_fila(fc) == 0){
+                    printf("x");
+                    break;
+                }
+
+                printf("%d, ", fc->cliente_in_fila->id);
+                j++;
+
+                fc = fc ->next;
+
+            }while(fc != NULL);
+            printf("\n");
         }
 
         int nc = numero_casse(current->configurazione_cassa->casse);
         printf("Numero di casse: %d\n", nc);
 
         int j = 0;
+
         for(struct casse *fc = current->configurazione_cassa->casse; fc != NULL; fc = fc->next){
+            if(j == 0){
+                printf("Clienti in fila alla cassa '%d': ", fc->fila_cassa->id);
+            }
+
+            if(lunghezza_fila(fc->fila_cassa) == 0){
+                printf("x");
+                break;
+            }
+
+            printf("%d, ", fc->fila_cassa->cliente_in_fila->id);
             j++;
-            printf("Clienti in fila alla cassa '%d': %d\n", j, lunghezza_fila(fc->fila_cassa));
+
         }
+
+        printf("\n");
 
         i++;
 

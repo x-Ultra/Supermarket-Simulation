@@ -23,6 +23,12 @@ struct cliente{
 
     //la configurazione di cassa scelta
     struct config_cassa **config_scelta;
+
+    //int id per debug
+    int id;
+
+    //indicatore
+    int in_fila_condivisa;
 };
 
 //fila, lista collegata di clienti
@@ -30,6 +36,9 @@ struct fila_cassa{
 
     struct cliente *cliente_in_fila;
     struct fila_cassa *next;
+
+    //id per debug
+    int id;
 };
 
 //casse, lista collegate di più casse, ovvero di piu' file
@@ -213,3 +222,6 @@ int num_simulazioni = 10;
 //per stimare il tempo di servizio in base al numero di oggetti
 double A = 2.61;
 double B = 20.56;
+
+//id per file
+int file_ids = 0;
