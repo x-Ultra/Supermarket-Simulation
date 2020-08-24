@@ -482,66 +482,274 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     int media_arr = 0;
 
-    //TODO finire giorni
-
     switch (giorno_settimana){
 
         case lun:
-            if(ore_6 <= ora && ora <= ore_7){
+            if ( ore_6 < ora && ora <= ore_7){
                 media_arr = arrivi_lun_6_7;
-
-            }else if(ore_7 < ora && ora <= ore_8){
+            } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_lun_7_8;
-
-            }else if(ore_8 < ora && ora <= ore_9){
+            } else if ( ore_8 < ora && ora <= ore_9){
                 media_arr = arrivi_lun_8_9;
-
-            }else if(ore_9 < ora && ora <= ore_10){
+            } else if ( ore_9 < ora && ora <= ore_10){
                 media_arr = arrivi_lun_9_10;
-
-            }else if(ore_10 < ora && ora <= ore_11){
+            } else if ( ore_10 < ora && ora <= ore_11){
                 media_arr = arrivi_lun_10_11;
-
-            }else if(ore_11 < ora && ora <= ore_12){
+            } else if ( ore_11 < ora && ora <= ore_12){
                 media_arr = arrivi_lun_11_12;
-
-            }else if(ore_12 < ora && ora <= ore_13){
+            } else if ( ore_12 < ora && ora <= ore_13){
                 media_arr = arrivi_lun_12_13;
-
-            }else if(ore_13 < ora && ora <= ore_14){
+            } else if ( ore_13 < ora && ora <= ore_14){
                 media_arr = arrivi_lun_13_14;
-
-            }else if(ore_14 < ora && ora <= ore_15){
+            } else if ( ore_14 < ora && ora <= ore_15){
                 media_arr = arrivi_lun_14_15;
-
-            }else if(ore_15 < ora && ora <= ore_16){
+            } else if ( ore_15 < ora && ora <= ore_16){
                 media_arr = arrivi_lun_15_16;
-
-            }else if(ore_16 < ora && ora <= ore_17){
+            } else if ( ore_16 < ora && ora <= ore_17){
                 media_arr = arrivi_lun_16_17;
-
-            }else if(ore_17 < ora && ora <= ore_18){
+            } else if ( ore_17 < ora && ora <= ore_18){
                 media_arr = arrivi_lun_17_18;
-
-            }else if(ore_18 < ora && ora <= ore_19){
+            } else if ( ore_18 < ora && ora <= ore_19){
                 media_arr = arrivi_lun_18_19;
-
-            }else if(ore_19 < ora && ora <= ore_20){
+            } else if ( ore_19 < ora && ora <= ore_20){
                 media_arr = arrivi_lun_19_20;
-
-            }else if(ore_20 < ora && ora <= ore_21){
+            } else if ( ore_20 < ora && ora <= ore_21){
                 media_arr = arrivi_lun_20_21;
-
-            }else if(ore_21 < ora && ora <= ore_22){
+            } else if ( ore_21 < ora && ora <= ore_22){
                 media_arr = arrivi_lun_21_22;
-
+            } else if ( ore_22 < ora && ora <= ore_23){
+                media_arr = arrivi_lun_22_23;
             }
             break;
 
-
         case mar:
-
+            if ( ore_6 < ora && ora <= ore_7){
+                media_arr = arrivi_mar_6_7;
+            } else if ( ore_7 < ora && ora <= ore_8){
+                media_arr = arrivi_mar_7_8;
+            } else if ( ore_8 < ora && ora <= ore_9){
+                media_arr = arrivi_mar_8_9;
+            } else if ( ore_9 < ora && ora <= ore_10){
+                media_arr = arrivi_mar_9_10;
+            } else if ( ore_10 < ora && ora <= ore_11){
+                media_arr = arrivi_mar_10_11;
+            } else if ( ore_11 < ora && ora <= ore_12){
+                media_arr = arrivi_mar_11_12;
+            } else if ( ore_12 < ora && ora <= ore_13){
+                media_arr = arrivi_mar_12_13;
+            } else if ( ore_13 < ora && ora <= ore_14){
+                media_arr = arrivi_mar_13_14;
+            } else if ( ore_14 < ora && ora <= ore_15){
+                media_arr = arrivi_mar_14_15;
+            } else if ( ore_15 < ora && ora <= ore_16){
+                media_arr = arrivi_mar_15_16;
+            } else if ( ore_16 < ora && ora <= ore_17){
+                media_arr = arrivi_mar_16_17;
+            } else if ( ore_17 < ora && ora <= ore_18){
+                media_arr = arrivi_mar_17_18;
+            } else if ( ore_18 < ora && ora <= ore_19){
+                media_arr = arrivi_mar_18_19;
+            } else if ( ore_19 < ora && ora <= ore_20){
+                media_arr = arrivi_mar_19_20;
+            } else if ( ore_20 < ora && ora <= ore_21){
+                media_arr = arrivi_mar_20_21;
+            } else if ( ore_21 < ora && ora <= ore_22){
+                media_arr = arrivi_mar_21_22;
+            } else if ( ore_22 < ora && ora <= ore_23){
+                media_arr = arrivi_mar_22_23;
+            }
             break;
+
+        case mer:
+            if ( ore_6 < ora && ora <= ore_7){
+                media_arr = arrivi_mer_6_7;
+            } else if ( ore_7 < ora && ora <= ore_8){
+                media_arr = arrivi_mer_7_8;
+            } else if ( ore_8 < ora && ora <= ore_9){
+                media_arr = arrivi_mer_8_9;
+            } else if ( ore_9 < ora && ora <= ore_10){
+                media_arr = arrivi_mer_9_10;
+            } else if ( ore_10 < ora && ora <= ore_11){
+                media_arr = arrivi_mer_10_11;
+            } else if ( ore_11 < ora && ora <= ore_12){
+                media_arr = arrivi_mer_11_12;
+            } else if ( ore_12 < ora && ora <= ore_13){
+                media_arr = arrivi_mer_12_13;
+            } else if ( ore_13 < ora && ora <= ore_14){
+                media_arr = arrivi_mer_13_14;
+            } else if ( ore_14 < ora && ora <= ore_15){
+                media_arr = arrivi_mer_14_15;
+            } else if ( ore_15 < ora && ora <= ore_16){
+                media_arr = arrivi_mer_15_16;
+            } else if ( ore_16 < ora && ora <= ore_17){
+                media_arr = arrivi_mer_16_17;
+            } else if ( ore_17 < ora && ora <= ore_18){
+                media_arr = arrivi_mer_17_18;
+            } else if ( ore_18 < ora && ora <= ore_19){
+                media_arr = arrivi_mer_18_19;
+            } else if ( ore_19 < ora && ora <= ore_20){
+                media_arr = arrivi_mer_19_20;
+            } else if ( ore_20 < ora && ora <= ore_21){
+                media_arr = arrivi_mer_20_21;
+            } else if ( ore_21 < ora && ora <= ore_22){
+                media_arr = arrivi_mer_21_22;
+            } else if ( ore_22 < ora && ora <= ore_23){
+                media_arr = arrivi_mer_22_23;
+            }
+            break;
+
+        case gio:
+            if ( ore_6 < ora && ora <= ore_7){
+                media_arr = arrivi_gio_6_7;
+            } else if ( ore_7 < ora && ora <= ore_8){
+                media_arr = arrivi_gio_7_8;
+            } else if ( ore_8 < ora && ora <= ore_9){
+                media_arr = arrivi_gio_8_9;
+            } else if ( ore_9 < ora && ora <= ore_10){
+                media_arr = arrivi_gio_9_10;
+            } else if ( ore_10 < ora && ora <= ore_11){
+                media_arr = arrivi_gio_10_11;
+            } else if ( ore_11 < ora && ora <= ore_12){
+                media_arr = arrivi_gio_11_12;
+            } else if ( ore_12 < ora && ora <= ore_13){
+                media_arr = arrivi_gio_12_13;
+            } else if ( ore_13 < ora && ora <= ore_14){
+                media_arr = arrivi_gio_13_14;
+            } else if ( ore_14 < ora && ora <= ore_15){
+                media_arr = arrivi_gio_14_15;
+            } else if ( ore_15 < ora && ora <= ore_16){
+                media_arr = arrivi_gio_15_16;
+            } else if ( ore_16 < ora && ora <= ore_17){
+                media_arr = arrivi_gio_16_17;
+            } else if ( ore_17 < ora && ora <= ore_18){
+                media_arr = arrivi_gio_17_18;
+            } else if ( ore_18 < ora && ora <= ore_19){
+                media_arr = arrivi_gio_18_19;
+            } else if ( ore_19 < ora && ora <= ore_20){
+                media_arr = arrivi_gio_19_20;
+            } else if ( ore_20 < ora && ora <= ore_21){
+                media_arr = arrivi_gio_20_21;
+            } else if ( ore_21 < ora && ora <= ore_22){
+                media_arr = arrivi_gio_21_22;
+            } else if ( ore_22 < ora && ora <= ore_23){
+                media_arr = arrivi_gio_22_23;
+            }
+            break;
+
+        case ven:
+            if ( ore_6 < ora && ora <= ore_7){
+                media_arr = arrivi_ven_6_7;
+            } else if ( ore_7 < ora && ora <= ore_8){
+                media_arr = arrivi_ven_7_8;
+            } else if ( ore_8 < ora && ora <= ore_9){
+                media_arr = arrivi_ven_8_9;
+            } else if ( ore_9 < ora && ora <= ore_10){
+                media_arr = arrivi_ven_9_10;
+            } else if ( ore_10 < ora && ora <= ore_11){
+                media_arr = arrivi_ven_10_11;
+            } else if ( ore_11 < ora && ora <= ore_12){
+                media_arr = arrivi_ven_11_12;
+            } else if ( ore_12 < ora && ora <= ore_13){
+                media_arr = arrivi_ven_12_13;
+            } else if ( ore_13 < ora && ora <= ore_14){
+                media_arr = arrivi_ven_13_14;
+            } else if ( ore_14 < ora && ora <= ore_15){
+                media_arr = arrivi_ven_14_15;
+            } else if ( ore_15 < ora && ora <= ore_16){
+                media_arr = arrivi_ven_15_16;
+            } else if ( ore_16 < ora && ora <= ore_17){
+                media_arr = arrivi_ven_16_17;
+            } else if ( ore_17 < ora && ora <= ore_18){
+                media_arr = arrivi_ven_17_18;
+            } else if ( ore_18 < ora && ora <= ore_19){
+                media_arr = arrivi_ven_18_19;
+            } else if ( ore_19 < ora && ora <= ore_20){
+                media_arr = arrivi_ven_19_20;
+            } else if ( ore_20 < ora && ora <= ore_21){
+                media_arr = arrivi_ven_20_21;
+            } else if ( ore_21 < ora && ora <= ore_22){
+                media_arr = arrivi_ven_21_22;
+            } else if ( ore_22 < ora && ora <= ore_23){
+                media_arr = arrivi_ven_22_23;
+            }
+            break;
+
+        case sab:
+            if ( ore_6 < ora && ora <= ore_7){
+                media_arr = arrivi_sab_6_7;
+            } else if ( ore_7 < ora && ora <= ore_8){
+                media_arr = arrivi_sab_7_8;
+            } else if ( ore_8 < ora && ora <= ore_9){
+                media_arr = arrivi_sab_8_9;
+            } else if ( ore_9 < ora && ora <= ore_10){
+                media_arr = arrivi_sab_9_10;
+            } else if ( ore_10 < ora && ora <= ore_11){
+                media_arr = arrivi_sab_10_11;
+            } else if ( ore_11 < ora && ora <= ore_12){
+                media_arr = arrivi_sab_11_12;
+            } else if ( ore_12 < ora && ora <= ore_13){
+                media_arr = arrivi_sab_12_13;
+            } else if ( ore_13 < ora && ora <= ore_14){
+                media_arr = arrivi_sab_13_14;
+            } else if ( ore_14 < ora && ora <= ore_15){
+                media_arr = arrivi_sab_14_15;
+            } else if ( ore_15 < ora && ora <= ore_16){
+                media_arr = arrivi_sab_15_16;
+            } else if ( ore_16 < ora && ora <= ore_17){
+                media_arr = arrivi_sab_16_17;
+            } else if ( ore_17 < ora && ora <= ore_18){
+                media_arr = arrivi_sab_17_18;
+            } else if ( ore_18 < ora && ora <= ore_19){
+                media_arr = arrivi_sab_18_19;
+            } else if ( ore_19 < ora && ora <= ore_20){
+                media_arr = arrivi_sab_19_20;
+            } else if ( ore_20 < ora && ora <= ore_21){
+                media_arr = arrivi_sab_20_21;
+            } else if ( ore_21 < ora && ora <= ore_22){
+                media_arr = arrivi_sab_21_22;
+            } else if ( ore_22 < ora && ora <= ore_23){
+                media_arr = arrivi_sab_22_23;
+            }
+            break;
+
+        case dom:
+            if ( ore_6 < ora && ora <= ore_7){
+                media_arr = arrivi_dom_6_7;
+            } else if ( ore_7 < ora && ora <= ore_8){
+                media_arr = arrivi_dom_7_8;
+            } else if ( ore_8 < ora && ora <= ore_9){
+                media_arr = arrivi_dom_8_9;
+            } else if ( ore_9 < ora && ora <= ore_10){
+                media_arr = arrivi_dom_9_10;
+            } else if ( ore_10 < ora && ora <= ore_11){
+                media_arr = arrivi_dom_10_11;
+            } else if ( ore_11 < ora && ora <= ore_12){
+                media_arr = arrivi_dom_11_12;
+            } else if ( ore_12 < ora && ora <= ore_13){
+                media_arr = arrivi_dom_12_13;
+            } else if ( ore_13 < ora && ora <= ore_14){
+                media_arr = arrivi_dom_13_14;
+            } else if ( ore_14 < ora && ora <= ore_15){
+                media_arr = arrivi_dom_14_15;
+            } else if ( ore_15 < ora && ora <= ore_16){
+                media_arr = arrivi_dom_15_16;
+            } else if ( ore_16 < ora && ora <= ore_17){
+                media_arr = arrivi_dom_16_17;
+            } else if ( ore_17 < ora && ora <= ore_18){
+                media_arr = arrivi_dom_17_18;
+            } else if ( ore_18 < ora && ora <= ore_19){
+                media_arr = arrivi_dom_18_19;
+            } else if ( ore_19 < ora && ora <= ore_20){
+                media_arr = arrivi_dom_19_20;
+            } else if ( ore_20 < ora && ora <= ore_21){
+                media_arr = arrivi_dom_20_21;
+            } else if ( ore_21 < ora && ora <= ore_22){
+                media_arr = arrivi_dom_21_22;
+            } else if ( ore_22 < ora && ora <= ore_23){
+                media_arr = arrivi_dom_22_23;
+            }
+            break;
+
     }
 
     return Exponential(media_arr);
