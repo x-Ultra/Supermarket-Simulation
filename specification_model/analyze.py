@@ -77,6 +77,7 @@ def plot_trans_time_old():
 	plt.scatter(items_1, times_1, s=5, color="r")
 	#plt.scatter(items_8, times_8, s=5, color="b")
 
+	print(best_fit)
 	pred_1 = [best_fit[0]*item + best_fit[1] for item in items_1]
 
 	plt.plot(items_1, pred_1 , color="b")
@@ -295,7 +296,7 @@ def plot_hour_transaction(day_filter):
 		else:
 			ratio[i] = trans[i]/total_hours[i]
 
-	for i in range(6, len(ratio), 2):
+	for i in range(6, len(ratio), 2):	
 		#print(float(ratio[i]), float(ratio[i+1]), (float(ratio[i])+float(ratio[i+1])))
 		print("%.2f" % (float((float(ratio[i])+float(ratio[i+1])))/2), end=" & ")
 	print("")
@@ -355,11 +356,7 @@ def plot_day_transaction():
 	plt.show()	
 
 
-for i in range(6, 23):
-	print(str(i)+":00 &", end=' ')
-print("")
-for i in range(0,7):
-	plot_hour_transaction(i)
+plot_trans_time_old()
 
 from math import exp,log10
 from scipy.stats import norm
