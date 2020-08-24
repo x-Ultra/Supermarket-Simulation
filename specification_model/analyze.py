@@ -298,7 +298,7 @@ def plot_hour_transaction(day_filter):
 
 	for i in range(6, len(ratio), 2):	
 		#print(float(ratio[i]), float(ratio[i+1]), (float(ratio[i])+float(ratio[i+1])))
-		print("%.2f" % (float((float(ratio[i])+float(ratio[i+1])))/2), end=" & ")
+		print("%.6f" % (float((float(ratio[i])+float(ratio[i+1])))/2), end=" & ")
 	print("")
 	plt.bar(hours, ratio)
 	
@@ -355,8 +355,11 @@ def plot_day_transaction():
 	plt.ylabel("Average number of transactions per hour")
 	plt.show()	
 
-
-plot_trans_time_old()
+for i in range(6, 23):
+	print(str(i)+":00 &", end=' ')
+print("")
+for i in range(0,7):
+	plot_hour_transaction(i)
 
 from math import exp,log10
 from scipy.stats import norm
@@ -386,3 +389,107 @@ for i in range(0, len(values)):
 		total += 1
 
 print(average / total)
+
+def plot_exponential(x_range, mu=0, sigma=1, cdf=False, **kwargs):
+	'''
+    Plots the exponential distribution function for a given x range
+    If mu and sigma are not provided, standard exponential is plotted
+    If cdf=True cumulative distribution is plotted
+    Passes any keyword arguments to matplotlib plot function
+    '''
+	x = x_range
+	if cdf:
+		y = st.expon.cdf(x, mu, sigma)
+	else:
+		y = st.expon.pdf(x, mu, sigma)
+	plt.plot(x, y, **kwargs)
+
+
+def compare_exponential(max_num_acquisti, samples):
+	# @samples: campione di numero di acquisti non normalizzato (con zero numero di acquisti incluso)
+	# @max_num_acquisti: usato pre graficare.
+
+	num_transactions = len(samples)
+	Xn = np.mean(samples)
+	print("Media NON normalizzata: ", np.mean(samples))
+
+	#normalizzo
+	norm =[]
+	for i in range(0, len(samples)):
+		norm.append(samples[i]/float(num_transactions))
+
+	print("Media normalizzata: ", np.mean(norm))
+
+	print("Grafico normalizzato")
+	sns.distplot(samples)
+	plt.show()
+
+	print("Esponenziale")
+	x = np.linspace(0, 300, 500)
+
+	plot_exponential(x, 0, Xn, color='red', lw=2, alpha=0.5, label="Densità reale esponenziale con media {}".format(Xn))
+	plt.legend()
+	plt.show()
+
+	print("Entrambe")
+	plot_exponential(x, 0, Xn, color='red', lw=3, alpha=0.5, label="Densità reale esponenziale con media {}".format(Xn))
+	sns.distplot(samples, label="Distribuzione campioni prelevati (istogramma+kernel density)")
+	plt.savefig('expon_proof.png')
+	plt.close()
+
+
+# risultati etratti da una settimana di transazioni
+def plot_item_quantity_big():
+	fd = open('transactions_200607.csv', newline='')
+	lines = csv.reader(fd, delimiter=',', quotechar='"')
+
+	# [gg][hh][quantita]
+	transactions = []
+
+	# 0 = lunedi, 6 = domenica
+	for i in range(0, 7):
+		transactions.append({})
+
+	items = [0 for i in range(0, 100)]
+	all = [0 for i in range(1,150)]
+	num_elem = 0
+	for line in lines:
+
+		try:
+			day = int(line[2]) - 1
+			hour = line[3]
+			quantity = int(line[4])
+			all[quantity] += 1
+			num_elem +=1
+			if transactions[day].get(hour, None) is None:
+				transactions[day][hour] = items.copy()
+			else:
+				transactions[day][hour][quantity] += 1
+
+		except:
+			pass
+
+
+	#calcolo media campionaria
+	compare_exponential(150, all, num_elem)
+
+
+
+def get_item_quantity():
+	fd = open('trans_time.csv', newline='')
+	item_quantity = csv.reader(fd, delimiter=',', quotechar='"')
+
+	all = []
+	for row in item_quantity:
+
+		if row[0] == 'WorkstationGroupID':
+			continue
+
+		if int(row[7])-1 < 299:
+			all.append(int(row[7])-1)
+
+	return all
+
+
+q = get_item_quantity()
+compare_exponential(299, q)
