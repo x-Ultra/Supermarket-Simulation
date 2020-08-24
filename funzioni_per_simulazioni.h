@@ -15,8 +15,9 @@ void popola_arrivi(int giorno_settimana){
     while(T < closing_time){
 
 
-        arr = (int)genera_arrivo(T, giorno_settimana);
+        arr = genera_arrivo(T, giorno_settimana);
         //aggiorno il tempo
+
         T = T + arr;
 
         //genero l'evento

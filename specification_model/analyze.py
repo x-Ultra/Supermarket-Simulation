@@ -4,7 +4,7 @@ import csv
 import scipy.stats as st
 import re
 from datetime import datetime
-from sklearn import datasets, linear_model
+#from sklearn import datasets, linear_model
 
 
 monday = "2017-12-11"

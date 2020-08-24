@@ -14,6 +14,25 @@ void stampa_num_eventi(int num);
 
 double Exponential(double media){
 
+    //rand rappresenta il valore della
+    //funzione di ditrubuzione e il valore ritornato
+    //e' il valore critoco ad esso associato:
+    //return F^-1(rand);
+
+
+    //tronco in questo modo (da 1 a infinito)
+
+    //alpha = F(1)(media) = 0.qualcosa
+    //trovo x | x/RAND_MAX = 0.qualcosa
+
+    //genero da x in poi
+    //(RAND_MAX-x)*(random()/RAND_MAX) +x = Y
+    //(random genera numeri da 0 a RAND_MAX)
+
+
+    //rand = Y/(RAND_MAX-x)
+
+
     double rand = (double)random()/RAND_MAX;
 
     return -media*log(1.0-rand);
@@ -69,12 +88,10 @@ char *secondi_ora(int secondi){
 //a media.. vedere relazione
 int get_num_oggetti(){
 
-    int exp = (int)Exponential(Xn);
-    if(exp > 1){
-        return exp;
-    }
+    //TODO fare troncamento da 1
+    int exp = Exponential(Xn);
 
-    return 1;
+    return exp;
 }
 
 //un cliente è generato a partire da un evento di tipo arrivo,
@@ -480,12 +497,12 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 //che verrà usato per la creazione del cliente.
 double genera_arrivo(int ora, int giorno_settimana){
 
-    int media_arr = 0;
+    double media_arr = 0;
 
     switch (giorno_settimana){
 
         case lun:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_lun_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_lun_7_8;
@@ -523,7 +540,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case mar:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_mar_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_mar_7_8;
@@ -561,7 +578,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case mer:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_mer_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_mer_7_8;
@@ -599,7 +616,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case gio:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_gio_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_gio_7_8;
@@ -637,7 +654,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case ven:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_ven_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_ven_7_8;
@@ -675,7 +692,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case sab:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_sab_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_sab_7_8;
@@ -713,7 +730,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case dom:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_dom_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_dom_7_8;
@@ -752,7 +769,7 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
-    return Exponential(media_arr);
+    return Exponential((double)1/((double)media_arr/60/60));
 }
 
 void genera_evento_servito(struct cliente *c){
