@@ -14,7 +14,7 @@ void inizializza(int num_simulazione){
 
     //creazione delle configurazioni di cassa
     //Testato OK (singolarmente)
-    //aggiungi_configurazione_cassa(condivisa, 1, 0);
+    aggiungi_configurazione_cassa(condivisa, 1, 0);
     //aggiungi_configurazione_cassa(condivisa, 4, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 1, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 2, 0);
@@ -31,7 +31,7 @@ void inizializza(int num_simulazione){
     //aggiungi_configurazione_selettiva_custom(1, 1, 1, 0, 1, 0);
 
     //leggera media e pesante, di cui la leggera condivisa e con 2 casse
-    aggiungi_configurazione_selettiva_custom(2, 1, 1, 1, 0, 0);
+    //aggiungi_configurazione_selettiva_custom(2, 1, 1, 1, 0, 0);
 
     //sbizzarrirsi...e automatizzare
 
@@ -67,6 +67,7 @@ int main() {
 
             printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n", giorno_corrente, secondi_ora((int)attesa_media_corrente), slowdown_medio_corrente);
             printf("Abbandoni: %d\n", abbandoni);
+            printf("Arrivi totali: %d\n", arrivi_totali);
 
             //TODO per iniziare simulazioni vere inserire prima arrivi_giorno_ora veri, in strutture_dati.h
             //  e finire funzione genera_arrivo().

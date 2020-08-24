@@ -14,6 +14,25 @@ void stampa_num_eventi(int num);
 
 double Exponential(double media){
 
+    //rand rappresenta il valore della
+    //funzione di ditrubuzione e il valore ritornato
+    //e' il valore critoco ad esso associato:
+    //return F^-1(rand);
+
+
+    //tronco in questo modo (da 1 a infinito)
+
+    //alpha = F(1)(media) = 0.qualcosa
+    //trovo x | x/RAND_MAX = 0.qualcosa
+
+    //genero da x in poi
+    //(RAND_MAX-x)*(random()/RAND_MAX) +x = Y
+    //(random genera numeri da 0 a RAND_MAX)
+
+
+    //rand = Y/(RAND_MAX-x)
+
+
     double rand = (double)random()/RAND_MAX;
 
     return -media*log(1.0-rand);
@@ -69,12 +88,10 @@ char *secondi_ora(int secondi){
 //a media.. vedere relazione
 int get_num_oggetti(){
 
-    int exp = (int)Exponential(Xn);
-    if(exp > 1){
-        return exp;
-    }
+    //TODO fare troncamento da 1
+    int exp = Exponential(Xn);
 
-    return 1;
+    return exp;
 }
 
 //un cliente è generato a partire da un evento di tipo arrivo,
@@ -480,7 +497,7 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
 //che verrà usato per la creazione del cliente.
 double genera_arrivo(int ora, int giorno_settimana){
 
-    int media_arr = 0;
+    double media_arr = 0;
 
     switch (giorno_settimana){
 
@@ -752,7 +769,7 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
-    return Exponential(media_arr);
+    return Exponential((double)1/((double)media_arr/60/60));
 }
 
 void genera_evento_servito(struct cliente *c){
