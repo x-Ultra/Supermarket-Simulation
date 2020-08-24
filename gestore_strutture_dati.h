@@ -12,7 +12,7 @@ void stampa_num_eventi(int num);
 //funzioni utili
 //-------------------------------------------------------
 
-double Exponential(double media){
+double Exponential(double media, int shift){
 
     //rand rappresenta il valore della
     //funzione di ditrubuzione e il valore ritornato
@@ -34,6 +34,10 @@ double Exponential(double media){
 
 
     double rand = (double)random()/RAND_MAX;
+
+    if(shift){
+        return -media*log(1.0-rand) +1;
+    }
 
     return -media*log(1.0-rand);
 }
@@ -88,8 +92,7 @@ char *secondi_ora(int secondi){
 //a media.. vedere relazione
 int get_num_oggetti(){
 
-    //TODO fare troncamento da 1
-    int exp = Exponential(Xn);
+    int exp = Exponential(Xn, 1);
 
     return exp;
 }
@@ -769,7 +772,7 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
-    return Exponential((double)1/((double)media_arr/60/60));
+    return Exponential((double)1/((double)media_arr/60/60), 0);
 }
 
 void genera_evento_servito(struct cliente *c){

@@ -55,6 +55,16 @@ int main() {
     for(int i = 0; i < num_simulazioni; ++i) {
 
         do{
+
+            eventi = NULL;
+            config_attive = NULL;
+            clienti_serviti = NULL;
+            arrivi_totali = 0;
+            abbandoni = 0;
+            attesa_media_corrente = 0;
+            slowdown_medio_corrente = 0;
+
+
             inizializza(i);
             printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
 
@@ -69,12 +79,7 @@ int main() {
             printf("Abbandoni: %d\n", abbandoni);
             printf("Arrivi totali: %d\n", arrivi_totali);
 
-            //TODO per iniziare simulazioni vere inserire prima arrivi_giorno_ora veri, in strutture_dati.h
-            //  e finire funzione genera_arrivo().
-
-            break;
-
-        }while(giorno_corrente < dom);
+        }while(giorno_corrente <= dom);
 
         //per ora testo solo 1 simulazione
         break;
