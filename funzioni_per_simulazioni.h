@@ -26,7 +26,7 @@ void popola_arrivi(int giorno_settimana){
 }
 
 
-//funzoine che nel momento in cui viene generato un clinete, lo associa alla fila
+//funzione che nel momento in cui viene generato un cliente, lo associa alla fila
 //piu' favorevole (in base al suo numero di acquisti).
 int scegli_fila(struct cliente *cli, struct evento *e){
 

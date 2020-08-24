@@ -485,7 +485,7 @@ double genera_arrivo(int ora, int giorno_settimana){
     switch (giorno_settimana){
 
         case lun:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_lun_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_lun_7_8;
@@ -523,7 +523,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case mar:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_mar_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_mar_7_8;
@@ -561,7 +561,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case mer:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_mer_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_mer_7_8;
@@ -599,7 +599,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case gio:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_gio_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_gio_7_8;
@@ -637,7 +637,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case ven:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_ven_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_ven_7_8;
@@ -675,7 +675,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case sab:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_sab_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_sab_7_8;
@@ -713,7 +713,7 @@ double genera_arrivo(int ora, int giorno_settimana){
             break;
 
         case dom:
-            if ( ore_6 < ora && ora <= ore_7){
+            if ( ore_6 <= ora && ora <= ore_7){
                 media_arr = arrivi_dom_6_7;
             } else if ( ore_7 < ora && ora <= ore_8){
                 media_arr = arrivi_dom_7_8;

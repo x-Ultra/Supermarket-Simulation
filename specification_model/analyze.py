@@ -304,7 +304,7 @@ def plot_hour_transaction(day_filter):
 	print("case " + days[day_filter] + ":")
 	for i in range(6, len(ratio)-1):
 		if i == 6:	
-			print("\tif ( ore_"+str(i)+" < ora && ora <= ore_"+str(i+1)+"){")
+			print("\tif ( ore_"+str(i)+" <= ora && ora <= ore_"+str(i+1)+"){")
 		else:
 			print("\t} else if ( ore_"+str(i)+" < ora && ora <= ore_"+str(i+1)+"){")
 		
