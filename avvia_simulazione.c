@@ -73,8 +73,8 @@ int main() {
         exit(1);             
     }
 
-
-
+    super_supermarket = 1;
+    super_factor = 10;
 
     for(int i = 3; i < 4; ++i) {
         

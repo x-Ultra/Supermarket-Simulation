@@ -777,7 +777,10 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
-    media_arr = media_arr*10;
+    if(super_supermarket){
+        media_arr = media_arr*super_factor;
+    }
+
     return Exponential((double)1/((double)media_arr/60/60), 0);
 }
 
