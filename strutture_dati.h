@@ -13,11 +13,6 @@
 #  define D(x)
 #endif
 
-int fake_printf( const char * format, ... )
-{
-    return 0;
-}
-
 //cliente
 struct cliente{
 
@@ -344,3 +339,6 @@ double B = 20.56;
 
 //id per file
 int file_ids = 0;
+
+int super_supermarket;
+int super_factor = 10;

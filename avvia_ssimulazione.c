@@ -14,8 +14,8 @@ void inizializza(int num_simulazione){
 
     //creazione delle configurazioni di cassa
     //Testato OK (singolarmente)
-    aggiungi_configurazione_cassa(condivisa, 1, 0);
-    //aggiungi_configurazione_cassa(condivisa, 4, 0);
+    aggiungi_configurazione_cassa(condivisa, 3, 0);
+    //aggiungi_configurazione_cassa(pseudo_casuale, 3, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 1, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 2, 0);
     //aggiungi_configurazione_cassa(mista, 2, 1);
@@ -24,11 +24,11 @@ void inizializza(int num_simulazione){
 
     //Testato (a gruppi di configurazioni)
     //leggera media pesante + 1 condivisa
-    //aggiungi_configurazione_cassa(mista, 3, 0);
+   // aggiungi_configurazione_cassa(mista, 10, 0);
     //aggiungi_configurazione_cassa(condivisa, 1, 0);
 
     //leggera media e pesante, di cui la media condivisa
-    //aggiungi_configurazione_selettiva_custom(1, 1, 1, 0, 1, 0);
+    //aggiungi_configurazione_selettiva_custom(2, 2, 1, 1, 1, 0);
 
     //leggera media e pesante, di cui la leggera condivisa e con 2 casse
     //aggiungi_configurazione_selettiva_custom(2, 1, 1, 1, 0, 0);
@@ -52,6 +52,9 @@ void inizializza(int num_simulazione){
 
 int main() {
 
+    super_supermarket = 1;
+    super_factor = 10;
+
     for(int i = 0; i < num_simulazioni; ++i) {
 
         do{
@@ -72,12 +75,13 @@ int main() {
 
             //TODO aggiungere funzione che elabora i dati
 
-            //per ora testo solo lunedi'
-            giorno_corrente++;
+
 
             printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n", giorno_corrente, secondi_ora((int)attesa_media_corrente), slowdown_medio_corrente);
             printf("Abbandoni: %d\n", abbandoni);
             printf("Arrivi totali: %d\n", arrivi_totali);
+
+            giorno_corrente++;
 
         }while(giorno_corrente <= dom);
 
