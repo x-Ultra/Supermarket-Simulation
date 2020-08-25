@@ -31,14 +31,16 @@ double Exponential(double media, int shift){
     //(random genera numeri da 0 a RAND_MAX)
 
 
-    //rand = Y/(RAND_MAX-x)
+    //printf("%f\n", media);
 
+    //rand = Y/(RAND_MAX-x)
     if(shift){
         SelectStream(0);
         return -media*log(1.0-Random()) +1;
     }
 
     SelectStream(1);
+    //printf("%f\n", -media*log(1.0-Random()));
     return -media*log(1.0-Random());
 }
 
@@ -772,6 +774,7 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
+    media_arr *= 10;
     return Exponential((double)1/((double)media_arr/60/60), 0);
 }
 

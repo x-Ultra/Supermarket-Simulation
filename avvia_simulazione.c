@@ -5,12 +5,27 @@
 #include "funzioni_per_simulazioni.h"
 #include "rngs.h"
 #include <unistd.h>
+#include <stdio.h>
+
+#define validation_poche_casse 0
+#define diminuzione_abbandoni 1
 
 //inizializza simulazione (eg. setta i semi, tipi di configurazioni di cassa in base ai cassieri....)
-//chiamata all'inizio di ogni nuovo giorno (ma num_simulazion cambia ogni settimana)
-void inizializza(int num_simulazione){
+// num_simulazione ne definisca il tipo di cassa, num_casse il numero di casse
+void inizializza(int num_simulazione, int num_casse){
 
     PlantSeeds(12345);
+
+    switch (num_simulazione) {
+
+        case validation_poche_casse:
+            aggiungi_configurazione_cassa(pseudo_casuale, num_casse, 0);
+        break;
+
+
+    }
+
+    return;
 
     //creazione delle configurazioni di cassa
     //Testato OK (singolarmente)
@@ -52,8 +67,17 @@ void inizializza(int num_simulazione){
 
 int main() {
 
-    for(int i = 0; i < num_simulazioni; ++i) {
+    FILE *f = fopen("simulation_results.csv", "a");
+    if(f == NULL)
+    {
+        printf("Impossibile creare/aprire file!");   
+        exit(1);             
+    }
 
+
+    for(int i = 3; i < 4; ++i) {
+        
+        giorno_corrente = lun;
         do{
 
             eventi = NULL;
@@ -65,7 +89,7 @@ int main() {
             slowdown_medio_corrente = 0;
 
 
-            inizializza(i);
+            inizializza(validation_poche_casse, i);
             printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
 
             start();
@@ -75,13 +99,15 @@ int main() {
             //per ora testo solo lunedi'
             giorno_corrente++;
 
+            fprintf(f, "%d, pseudo-casuale, none, %d, %d, %f, %f, 0, %d, %d, %d, 1\n", validation_poche_casse, i, giorno_corrente, attesa_media_corrente, slowdown_medio_corrente, abbandoni,massima_lunghezza_fila_tollerata, arrivi_totali);
+
             printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n", giorno_corrente, secondi_ora((int)attesa_media_corrente), slowdown_medio_corrente);
             printf("Abbandoni: %d\n", abbandoni);
             printf("Arrivi totali: %d\n", arrivi_totali);
 
-        }while(giorno_corrente <= dom);
+        } while(giorno_corrente <= dom);
 
-        //per ora testo solo 1 simulazione
-        break;
     }
+
+    fclose(f);
 }

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//#define DEBUG 1
+#define DEBUG 1
 
 #ifdef DEBUG
 #  define D(x) x
@@ -319,7 +319,7 @@ int arrivi_totali = 0;
 int abbandoni = 0;
 
 //massimo lunghezza della fila
-int massima_lunghezza_fila_tollerata = 10;
+int massima_lunghezza_fila_tollerata = 20;
 double attesa_media_corrente = 0;
 
 double slowdown_medio_corrente = 0;
