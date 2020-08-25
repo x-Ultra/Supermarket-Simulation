@@ -14,6 +14,7 @@
 void inizializza(int num_simulazione, int num_casse){
 
     PlantSeeds(94823498);
+    /*
 
     switch (num_simulazione) {
 
@@ -25,10 +26,12 @@ void inizializza(int num_simulazione, int num_casse){
     }
 
     return;
+     */
 
     //creazione delle configurazioni di cassa
     //Testato OK (singolarmente)
-    aggiungi_configurazione_cassa(condivisa, 1, 0);
+    //aggiungi_configurazione_cassa(condivisa, 3, 0);
+    aggiungi_configurazione_selettiva_custom(1, 1, 1, 0, 1, 0);
     //aggiungi_configurazione_cassa(condivisa, 4, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 1, 0);
     //aggiungi_configurazione_cassa(pseudo_casuale, 2, 0);
@@ -87,6 +90,7 @@ int main() {
             arrivi_totali = 0;
             abbandoni = 0;
             attesa_media_corrente = 0;
+            varianza_tempo_attesa = 0;
             slowdown_medio_corrente = 0;
 
 
@@ -103,6 +107,7 @@ int main() {
             fprintf(f, "%d, pseudo-casuale, none, %d, %d, %f, %f, 0, %d, %d, %d, 1\n", validation_poche_casse, i, giorno_corrente, attesa_media_corrente, slowdown_medio_corrente, abbandoni,massima_lunghezza_fila_tollerata, arrivi_totali);
 
             printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n", giorno_corrente, secondi_ora((int)attesa_media_corrente), slowdown_medio_corrente);
+            printf("Deviazione std tempo d'attesa: %s\n", secondi_ora(sqrt(varianza_tempo_attesa)));
             printf("Abbandoni: %d\n", abbandoni);
             printf("Arrivi totali: %d\n", arrivi_totali);
 

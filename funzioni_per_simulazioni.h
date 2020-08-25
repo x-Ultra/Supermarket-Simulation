@@ -236,9 +236,11 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     cli->servito_alle = e->tempo;
     cli->attesa_in_fila = cli->iniziato_a_servire - cli->in_fila;
 
-    //algoritmo di WELFORD per il calcolo dinamico del tempo medio di attesa
-    attesa_media_corrente = attesa_media_corrente + ((float)1/arrivi_totali)*(cli->attesa_in_fila - attesa_media_corrente);
+    //algoritmo di WELFORD per il calcolo dinamico della varianza
+    varianza_tempo_attesa = varianza_tempo_attesa + ((float)(arrivi_totali-1)/arrivi_totali)*(cli->attesa_in_fila - attesa_media_corrente);
 
+    //algoritmo di WELFORD per il calcolo dinamico del tempo medio di attesa  e slowdown
+    attesa_media_corrente = attesa_media_corrente + ((float)1/arrivi_totali)*(cli->attesa_in_fila - attesa_media_corrente);
     slowdown_medio_corrente = slowdown_medio_corrente + ((float)1/arrivi_totali)*((float)(cli->attesa_in_fila+(cli->servito_alle-cli->iniziato_a_servire))/(cli->servito_alle-cli->iniziato_a_servire) - slowdown_medio_corrente);
 
     //imposta al cliente successivo il tempo in cui e' iniziato ad essere servito, se presente
