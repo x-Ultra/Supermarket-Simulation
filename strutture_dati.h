@@ -314,7 +314,7 @@ int arrivi_totali = 0;
 int abbandoni = 0;
 
 //massimo lunghezza della fila
-int massima_lunghezza_fila_tollerata = 10;
+int massima_lunghezza_fila_tollerata = 10000;
 double attesa_media_corrente = 0;
 
 double slowdown_medio_corrente = 0;

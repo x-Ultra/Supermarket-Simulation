@@ -3,6 +3,7 @@
 //
 
 #include "strutture_dati.h"
+#include "rngs.h"
 #include <math.h>
 #include <string.h>
 
@@ -14,12 +15,35 @@ void stampa_num_eventi(int num);
 
 double Exponential(double media, int shift){
 
-    double rand = (double)random()/RAND_MAX;
+    //rand rappresenta il valore della
+    //funzione di ditrubuzione e il valore ritornato
+    //e' il valore critoco ad esso associato:
+    //return F^-1(rand);
 
+
+    //tronco in questo modo (da 1 a infinito)
+
+    //alpha = F(1)(media) = 0.qualcosa
+    //trovo x | x/RAND_MAX = 0.qualcosa
+
+    //genero da x in poi
+    //(RAND_MAX-x)*(random()/RAND_MAX) +x = Y
+    //(random genera numeri da 0 a RAND_MAX)
+
+
+    //printf("%f\n", media);
+
+    //rand = Y/(RAND_MAX-x)
     if(shift){
-        return -media*log(1.0-rand) +1;
+        SelectStream(0);
+        return -media*log(1.0-Random()) +1;
     }
 
+    float rand = Random();
+    //printf("media oraria: %f, inverso:%f exp: %f, count: %d\n", (1/media)*60*60, media, -media*log(1.0-rand), count);
+    
+    SelectStream(1);
+    //printf("%f\n", -media*log(1.0-Random()));
     return -media*log(1.0-rand);
 }
 
@@ -753,10 +777,7 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
-    if(super_supermarket){
-        media_arr = media_arr*super_factor;
-    }
-
+    media_arr = media_arr*10;
     return Exponential((double)1/((double)media_arr/60/60), 0);
 }
 

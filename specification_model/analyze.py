@@ -4,7 +4,7 @@ import csv
 import scipy.stats as st
 import re
 from datetime import datetime
-#from sklearn import datasets, linear_model
+from sklearn import datasets, linear_model
 
 
 monday = "2017-12-11"
@@ -301,18 +301,25 @@ def plot_hour_transaction(day_filter):
 #            }else if(ore_7 < ora && ora <= ore_8){
 #                media_arr = arrivi_lun_7_8;
 
-	print("case " + days[day_filter] + ":")
-	for i in range(6, len(ratio)-1):
-		if i == 6:	
-			print("\tif ( ore_"+str(i)+" < ora && ora <= ore_"+str(i+1)+"){")
-		else:
-			print("\t} else if ( ore_"+str(i)+" < ora && ora <= ore_"+str(i+1)+"){")
+	# print("case " + days[day_filter] + ":")
+	# for i in range(6, len(ratio)-1):
+	# 	if i == 6:	
+	# 		print("\tif ( ore_"+str(i)+" < ora && ora <= ore_"+str(i+1)+"){")
+	# 	else:
+	# 		print("\t} else if ( ore_"+str(i)+" < ora && ora <= ore_"+str(i+1)+"){")
 		
-		print("\t\tmedia_arr = arrivi_"+days[day_filter]+"_"+str(i)+"_"+str(i+1)+";")
-	print("\t}")
-	print("\tbreak;")
-		#print(float(ratio[i]), float(ratio[i+1]), (float(ratio[i])+float(ratio[i+1])))
-		#print("#define arrivi_"+days[day_filter]+"_"+str(i)+"_"+str(i+1)+" %.6f" % ratio[i])
+	# 	print("\t\tmedia_arr = arrivi_"+days[day_filter]+"_"+str(i)+"_"+str(i+1)+";")
+	# print("\t}")
+	# print("\tbreak;")
+	# 	#print(float(ratio[i]), float(ratio[i+1]), (float(ratio[i])+float(ratio[i+1])))
+	# 	#print("#define arrivi_"+days[day_filter]+"_"+str(i)+"_"+str(i+1)+" %.6f" % ratio[i])
+	# print("")
+
+	print()
+	for i in range(6, len(ratio)-1):
+		print("%.2f" % (ratio[i]*10), end=" & ")
+		if i == 13:
+			print("|||", end='')
 	print("")
 	plt.bar(hours, ratio)
 	

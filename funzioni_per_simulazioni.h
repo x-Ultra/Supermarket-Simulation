@@ -27,7 +27,7 @@ void popola_arrivi(int giorno_settimana){
 }
 
 
-//funzoine che nel momento in cui viene generato un clinete, lo associa alla fila
+//funzione che nel momento in cui viene generato un cliente, lo associa alla fila
 //piu' favorevole (in base al suo numero di acquisti).
 int scegli_fila(struct cliente *cli, struct evento *e){
 
@@ -115,7 +115,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
         }
 
     }
-
+    
     //se la fila scelta dal cliente (che sarebbe la sua migliore possibilita)
     //ha unna lunghezza elevata, il cliente rinuncia agli acquisti
     if(min > massima_lunghezza_fila_tollerata){
