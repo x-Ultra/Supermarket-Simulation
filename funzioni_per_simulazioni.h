@@ -115,7 +115,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
         }
 
     }
-
+    
     //se la fila scelta dal cliente (che sarebbe la sua migliore possibilita)
     //ha unna lunghezza elevata, il cliente rinuncia agli acquisti
     if(min > massima_lunghezza_fila_tollerata){

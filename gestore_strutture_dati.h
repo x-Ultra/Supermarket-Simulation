@@ -39,9 +39,12 @@ double Exponential(double media, int shift){
         return -media*log(1.0-Random()) +1;
     }
 
+    float rand = Random();
+    //printf("media oraria: %f, inverso:%f exp: %f, count: %d\n", (1/media)*60*60, media, -media*log(1.0-rand), count);
+    
     SelectStream(1);
     //printf("%f\n", -media*log(1.0-Random()));
-    return -media*log(1.0-Random());
+    return -media*log(1.0-rand);
 }
 
 
@@ -774,7 +777,7 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
-    media_arr *= 10;
+    media_arr = media_arr*10;
     return Exponential((double)1/((double)media_arr/60/60), 0);
 }
 

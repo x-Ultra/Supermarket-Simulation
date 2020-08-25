@@ -8,13 +8,12 @@
 #include <stdio.h>
 
 #define validation_poche_casse 0
-#define diminuzione_abbandoni 1
 
 //inizializza simulazione (eg. setta i semi, tipi di configurazioni di cassa in base ai cassieri....)
 // num_simulazione ne definisca il tipo di cassa, num_casse il numero di casse
 void inizializza(int num_simulazione, int num_casse){
 
-    PlantSeeds(12345);
+    PlantSeeds(94823498);
 
     switch (num_simulazione) {
 
@@ -73,6 +72,8 @@ int main() {
         printf("Impossibile creare/aprire file!");   
         exit(1);             
     }
+
+
 
 
     for(int i = 3; i < 4; ++i) {
