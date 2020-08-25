@@ -1,2 +1,3 @@
 all:
-	gcc avvia_ssimulazione.c -lm -o simu
+	gcc -o rngs.o -c rngs.c
+	gcc avvia_simulazione.c -lm -o simu rngs.o

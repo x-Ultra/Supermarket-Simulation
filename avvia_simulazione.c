@@ -3,14 +3,14 @@
 //
 
 #include "funzioni_per_simulazioni.h"
-
+#include "rngs.h"
 #include <unistd.h>
 
 //inizializza simulazione (eg. setta i semi, tipi di configurazioni di cassa in base ai cassieri....)
 //chiamata all'inizio di ogni nuovo giorno (ma num_simulazion cambia ogni settimana)
 void inizializza(int num_simulazione){
 
-    srandom(SEED-num_simulazione);
+    PlantSeeds(12345);
 
     //creazione delle configurazioni di cassa
     //Testato OK (singolarmente)

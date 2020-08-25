@@ -3,6 +3,7 @@
 //
 
 #include "strutture_dati.h"
+#include "rngs.h"
 #include <math.h>
 #include <string.h>
 
@@ -32,14 +33,13 @@ double Exponential(double media, int shift){
 
     //rand = Y/(RAND_MAX-x)
 
-
-    double rand = (double)random()/RAND_MAX;
-
     if(shift){
-        return -media*log(1.0-rand) +1;
+        SelectStream(0);
+        return -media*log(1.0-Random()) +1;
     }
 
-    return -media*log(1.0-rand);
+    SelectStream(1);
+    return -media*log(1.0-Random());
 }
 
 
