@@ -824,6 +824,29 @@ char *tipo_config(int tipo){
 
 }
 
+char *giorno_str(int gg){
+
+    switch(gg){
+        case lun:
+            return "lunedì";
+        case mar:
+            return "martedì";
+        case mer:
+            return "mercoledì";
+        case gio:
+            return "giovedì";
+        case ven:
+            return "venerdì";
+        case sab:
+            return "sabato";
+        case dom:
+            return "domenica";
+        default:
+            return "giorno non definito";
+    }
+
+}
+
 void info_su_configurazioni_attive(){
 
     int i = 1;

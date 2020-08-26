@@ -327,7 +327,7 @@ double Xn = 13.343702;
 int giorno_corrente = 0;
 
 //semi
-int SEED = 1234567;
+int SEED = 94823498;
 
 //l'idea è sottrarre al seme 1, per ogni simulazione (settimanale)
 //che viene fatta, in modo da applicare la replicazione
