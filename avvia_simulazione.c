@@ -4,8 +4,6 @@
 
 #include "funzioni_per_simulazioni.h"
 #include "rngs.h"
-#include <unistd.h>
-#include <stdio.h>
 
 #define validation_poche_casse 0
 
