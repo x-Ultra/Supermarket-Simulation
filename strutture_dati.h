@@ -331,7 +331,7 @@ int SEED = 94823498;
 
 //l'idea è sottrarre al seme 1, per ogni simulazione (settimanale)
 //che viene fatta, in modo da applicare la replicazione
-int num_simulazioni = 50;
+int num_simulazioni = 10;
 
 //coefficienti estratti dalla retta di regressione
 //per stimare il tempo di servizio in base al numero di oggetti
