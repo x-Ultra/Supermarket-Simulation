@@ -1,3 +1,4 @@
+
 //
 // Created by ezio on 19/08/20.
 //
@@ -395,13 +396,14 @@ int aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_cass
     }
 
     if(num_casse_medie != 0){
-        (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
-        current = &(((struct config_cassa_attive *)*current)->next);
+        if (num_casse_leggere != 0) {
+            (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
+            current = &(((struct config_cassa_attive *)*current)->next);
 
-        ((struct config_cassa_attive *)*current)->next = NULL;
-        ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-        nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
-
+            ((struct config_cassa_attive *)*current)->next = NULL;
+            ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+            nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
+        }
         ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
         ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_media;
         ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(num_casse_medie);
@@ -413,13 +415,14 @@ int aggiungi_configurazione_selettiva_custom(int num_casse_leggere, int num_cass
     }
 
     if(num_casse_pesanti != 0){
-        (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
-        current = &(((struct config_cassa_attive *)*current)->next);
+        if (num_casse_leggere != 0 || num_casse_medie != 0) {
+            (((struct config_cassa_attive *)*current)->next) = (struct config_cassa_attive *) malloc(sizeof(struct config_cassa_attive));
+            current = &(((struct config_cassa_attive *)*current)->next);
 
-        ((struct config_cassa_attive *)*current)->next = NULL;
-        ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
-        nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
-
+            ((struct config_cassa_attive *)*current)->next = NULL;
+            ((struct config_cassa_attive *)*current)->configurazione_cassa = (struct config_cassa *) malloc(sizeof(struct config_cassa));
+            nuova_configurazione = &((struct config_cassa_attive *)*current)->configurazione_cassa;
+        }
         ((struct config_cassa *)*nuova_configurazione)->tipo = selettiva;
         ((struct config_cassa *)*nuova_configurazione)->sotto_tipo = selettiva_pesante;
         ((struct config_cassa *)*nuova_configurazione)->casse = genera_set_casse(num_casse_pesanti);
