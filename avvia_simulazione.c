@@ -99,15 +99,15 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
 
         case incr_2_10_cond:
             aggiungi_configurazione_cassa(condivisa, num_casse, 0);
-            sprintf(str, "Condivisa con %d casse", num_casse);
+            sprintf(str, "Condivisa");
             return str;
         case incr_2_10_pc:
             aggiungi_configurazione_cassa(pseudo_casuale, num_casse, 0);
-            sprintf(str, "Pseudo-Casuale con %d casse", num_casse);
+            sprintf(str, "Pseudo-Casuale");
             return str;
         case incr_3_10_sel:
             aggiungi_configurazione_cassa(selettiva, num_casse, 0);
-            sprintf(str, "Selettiva con %d casse", num_casse);
+            sprintf(str, "Selettiva");
             return str;
         case incr_3_10_sel_cond:
             //num_casse parte da 3
@@ -126,16 +126,17 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
                 }
             }while(1);
             aggiungi_configurazione_selettiva_custom(legg, med, pes, 1, 1, 1);
-            sprintf(str, "Selettiva con casse %d casse e fila condivise", num_casse);
+            sprintf(str, "Selettiva con fila condivisa");
             return str;
         case mista_3_x:
             //num_casse sono le condivise oltre le 3 selettive
             aggiungi_configurazione_cassa(selettiva, 3+num_casse, num_casse);
-            sprintf(str, "3 selettive con %d casse a fila condivisa", num_casse);
+            sprintf(str, "3 selettive più casse a file condivisa");
             return str;
         case mista_1_x:
-            aggiungi_configurazione_cassa(selettiva,1+ num_casse, num_casse);
-            sprintf(str, "1 selettiva (leggera) con %d casse a fila condivisa", num_casse);
+            aggiungi_configurazione_selettiva_custom(1, 0, 0, 1, 0, 0);
+            aggiungi_configurazione_cassa(condivisa,num_casse, 0);
+            sprintf(str, "1 selettiva (leggera) più casse a fila condivisa");
             return str;
     }
 
@@ -182,10 +183,26 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
 
 void simulazioni_ezio();
 
+void tutte_simulazioni_ezio(){
+
+    simulazioni_ezio(incr_2_10_cond, 2, 10);
+
+    /*
+
+    simulazioni_ezio(incr_2_10_pc, 2, 10);
+    simulazioni_ezio(incr_3_10_sel, 3, 10);
+    simulazioni_ezio(incr_3_10_sel_cond, 3, 10);
+    simulazioni_ezio(mista_3_x, 1, 7);
+    simulazioni_ezio(mista_1_x, 1, 9);
+    */
+
+
+}
+
 
 int main() {
 
-    simulazioni_ezio();
+    tutte_simulazioni_ezio();
     return 0;
 
 
@@ -315,9 +332,13 @@ int main() {
     fclose(ff);
 }
 
+int minuti_sotto(int minuti){
+
+    return (double)(minuti_sopportati-minuti)/60;
+}
 
 
-void simulazioni_ezio(){
+void simulazioni_ezio(int tipo_simulazione, int numero_iniziale_cassieri, int max_num_cassieri){
 
 
     FILE *ff = fopen("simulation_results_ezio.csv","a");
@@ -333,10 +354,7 @@ void simulazioni_ezio(){
     int alpha = 5;
     int seed;
 
-    //definire qui tipo di simulazione e aggiustare num_cassieri iniziali di conseguenza
-    int tipo_simulazione = incr_2_10_cond;
-
-    for(int num_cassieri = 2; num_cassieri <= 10; num_cassieri++) {
+    for(int num_cassieri = numero_iniziale_cassieri; num_cassieri <= max_num_cassieri; num_cassieri++) {
 
         giorno_corrente = lun;
         do {
@@ -467,15 +485,20 @@ void simulazioni_ezio(){
             ic_abb_l = Xnabb - (double)get_stud(alpha)*Snabb/sqrt(num_simulazioni);
             ic_abb_r = Xnabb + (double)get_stud(alpha)*Snabb/sqrt(num_simulazioni);
 
-            fprintf(ff, "%d, %s, %d, %s, [%s, %s], [%f, %f], [%s, %s], [%f, %f], [%f, %f], %d, %d, %d\n",
-                    validation_poche_casse, tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
-                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
-                    massima_lunghezza_fila_tollerata, num_simulazioni, alpha);
+            //TODO magari usare coefficienti diversi per calcolare costo mensile
+            //calcolo del costo mensile del supermercato.
+            double costo_mensile = num_cassieri*2*guadagno_mensile_cassieri - guadagno_attesa_cliente*minuti_sotto(Xnatt)*30*Xnarr + costo_abbandono_cliente*Xnabb*30;
 
-            printf("%d, %s, %d, %s, [%s, %s], [%f, %f], [%s, %s], [%f, %f], [%f, %f], %d, %d, %d\n",
-                   validation_poche_casse, tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
+            fprintf(ff, "%s, %d, %s, \"[%s, %s]\", \"[%f, %f]\", \"[%s, %s]\", \"[%f, %f]\", \"[%f, %f]\", %d, %d, %d\n",
+                    tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
+                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
+                    massima_lunghezza_fila_tollerata, num_simulazioni, num_cassieri);
+
+
+            printf("%s, %d, %s, [%s, %s], [%f, %f], [%s, %s], [%f, %f], [%f, %f], %d, %d, %d, %f\n",
+                   tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
-                   massima_lunghezza_fila_tollerata, num_simulazioni, alpha);
+                   massima_lunghezza_fila_tollerata, num_simulazioni, num_cassieri, costo_mensile);
 
 
             printf("Giorno: %s fatto, con %d num_casse\n", giorno_str(giorno_corrente), num_cassieri);

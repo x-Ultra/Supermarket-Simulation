@@ -356,3 +356,14 @@ int file_ids = 0;
 
 int super_supermarket;
 int super_factor = 10;
+
+//vasiabili usate per il calcolo del costo sostenuto dal
+
+//ogni minuto sotto i 5min.....
+int minuti_sopportati = 5*60;
+//.... il supermercato quagagna 1$
+int guadagno_attesa_cliente = 1;
+
+int costo_abbandono_cliente = 50;
+
+int guadagno_mensile_cassieri = 1300;
