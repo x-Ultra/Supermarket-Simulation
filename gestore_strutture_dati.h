@@ -966,7 +966,100 @@ void stampa_evento(struct evento *e){
 
 }
 
+//-------------------------------------------------------
+//funzione per generazione di intervalli di confidenza
+//-------------------------------------------------------
 
+double* get_chi(int alpha){
+
+    double *critial = (double *)malloc(2*sizeof(double));
+
+    //perchè i valori seguenti sono stati calcolati per una chi quadro con 19
+    //gradi di libertà
+    if(num_simulazioni != 20){
+        return NULL;
+    }
+
+    switch (alpha){
+        case 1:
+            critial[0] = 6.844;
+            critial[1] = 38.658;
+            break;
+        case 2:
+            critial[0] = 7.633;
+            critial[1] = 36.191;
+            break;
+        case 5:
+            critial[0] = 8.907;
+            critial[1] = 32.825;
+            break;
+        case 10:
+            critial[0] = 10.117;
+            critial[1] = 30.144;
+            break;
+        default:
+            break;
+    }
+
+    return critial;
+
+}
+
+
+double get_stud(int alpha){
+
+    double critial = -1;
+
+    //perchè i valori seguenti sono stati calcolati per una student con 19
+    //gradi di libertà
+    if(num_simulazioni != 20){
+        return -1;
+    }
+
+    switch (alpha){
+        case 1:
+            critial = 2.861;
+            break;
+        case 2:
+            critial = 2.539;
+            break;
+        case 5:
+            critial = 2.093;
+            break;
+        case 10:
+            critial = 1.729;
+            break;
+        default:
+            break;
+    }
+
+    return critial;
+
+}
+
+
+double get_gauss(int alpha){
+    double critial = -1;
+
+    switch (alpha){
+        case 1:
+            critial = 3.32;
+            break;
+        case 2:
+            critial = 2.33;
+            break;
+        case 5:
+            critial = 1.96;
+            break;
+        case 10:
+            critial = 1.64;
+            break;
+        default:
+            break;
+    }
+
+    return critial;
+}
 
 
 

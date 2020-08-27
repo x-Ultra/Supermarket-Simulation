@@ -300,6 +300,19 @@ int T = opening_time;
 #define sab 5
 #define dom 6
 
+//tipo di sperimentazioni
+#define incr_2_10_cond 10001
+#define incr_2_10_pc 10002
+#define incr_3_10_sel 10003
+#define incr_3_10_sel_cond 10004
+//3 casse selettive e da 1 a 7 casse con fila condivisa
+#define mista_3_x 10005
+//da 1 a 9 casse ocn fila condivisa più una selettiva legera
+#define mista_1_x 10006
+
+
+#define validation_poche_casse 0
+
 //configurazioni di cassa attive
 struct config_cassa_attive *config_attive = NULL;
 
@@ -331,7 +344,7 @@ int SEED = 94823498;
 
 //l'idea è sottrarre al seme 1, per ogni simulazione (settimanale)
 //che viene fatta, in modo da applicare la replicazione
-int num_simulazioni = 10;
+int num_simulazioni = 20;
 
 //coefficienti estratti dalla retta di regressione
 //per stimare il tempo di servizio in base al numero di oggetti
