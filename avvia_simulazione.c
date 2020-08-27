@@ -505,6 +505,7 @@ void simulazioni_ezio(int tipo_simulazione, int numero_iniziale_cassieri, int ma
 
             giorno_corrente++;
 
+
         } while (giorno_corrente <= dom);
     }
 
