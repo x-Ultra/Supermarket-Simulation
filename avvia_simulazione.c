@@ -79,8 +79,10 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
 
         case sperimentale_media_condivisa:
             nums = get_split(num_casse, 60, 20, 20);
+            info_su_configurazioni_attive();
             aggiungi_configurazione_selettiva_custom(0, nums[0], 0, 1, 1, 1);
             aggiungi_configurazione_cassa(condivisa, nums[1]+nums[2], 0);
+            //info_su_configurazioni_attive();
             free(nums);
         return "sperimentale_media_condivisa";
 
@@ -151,7 +153,7 @@ int main() {
 
     int num_cassieri = 1;
 
-    int simu_id = sperimentale_20_60_20;
+    int simu_id = sperimentale_pesante_condivisa;
 
     for (int c = 4; c < 15; c++) {
         giorno_corrente = lun;
@@ -185,9 +187,9 @@ int main() {
 
                 seed++;
 
+                
                 //printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
                 start();
-
                 /*
                 printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n",
                        giorno_corrente, secondi_ora((int) attesa_media_corrente), slowdown_medio_corrente);

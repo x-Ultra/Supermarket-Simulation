@@ -48,6 +48,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
 
     int file_scelte = 0;
 
+    
     for(struct config_cassa_attive *cfga = config_attive; cfga != NULL; cfga = cfga->next){
 
         if(cfga->configurazione_cassa->tipo == condivisa){
@@ -95,18 +96,20 @@ int scegli_fila(struct cliente *cli, struct evento *e){
                 }
             }
             D(printf("Scelta fila pseudo casuale...\n"));
-
         }
 
     }
-
+    
     file_selezionabili[file_scelte] = NULL;
     config_selezionabili[file_scelte] = NULL;
 
     //scorri tutte le file selezionabili e scegli quella con il minor numero di persone in fila
     int i = 0;
+
+
     int min = lunghezza_fila(*file_selezionabili[0]);
     int scelta = 0;
+
 
     for(struct fila_cassa **fc = file_selezionabili[i]; fc != NULL; fc = file_selezionabili[i], ++i){
 
@@ -115,6 +118,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
         }
 
     }
+
     
     //se la fila scelta dal cliente (che sarebbe la sua migliore possibilita)
     //ha unna lunghezza elevata, il cliente rinuncia agli acquisti
@@ -354,14 +358,17 @@ void start(){
         evento_corrente = e->evento;
 
 
-
         //se l'evento è l'arrivo di un cliente, crealo
         //e aggiungilo nella fila piu' adeguata (che sceglierebbe)
         if(evento_corrente->tipo == arrivo){
             arrivi_totali++;
 
+
             struct cliente *cliente = genera_cliente(evento_corrente->tempo);
+
             scegli_fila(cliente, evento_corrente);
+
+    
 
             D(printf("Nuovo cliente %d aggiunto in fila\n", cliente->id));
 
