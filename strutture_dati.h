@@ -364,6 +364,6 @@ int minuti_sopportati = 5*60;
 //.... il supermercato quagagna 1$
 int guadagno_attesa_cliente = 1;
 
-int costo_abbandono_cliente = 50;
+int costo_abbandono_cliente = 20;
 
 int guadagno_mensile_cassieri = 1300;

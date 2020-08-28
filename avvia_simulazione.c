@@ -140,43 +140,6 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
             return str;
     }
 
-
-    //creazione delle configurazioni di cassa
-    //Testato OK (singolarmente)
-    //aggiungi_configurazione_cassa(condivisa, 3, 0);
-    //aggiungi_configurazione_selettiva_custom(1, 1, 1, 0, 1, 0);
-    //aggiungi_configurazione_cassa(condivisa, 4, 0);
-    //aggiungi_configurazione_cassa(pseudo_casuale, 1, 0);
-    //aggiungi_configurazione_cassa(pseudo_casuale, 2, 0);
-    //aggiungi_configurazione_cassa(mista, 2, 1);
-    //aggiungi_configurazione_cassa(mista, 3, 1);
-    //aggiungi_configurazione_cassa(mista, 4, 1);
-
-    //Testato (a gruppi di configurazioni)
-    //leggera media pesante + 1 condivisa
-    //aggiungi_configurazione_cassa(mista, 3, 0);
-    //aggiungi_configurazione_cassa(condivisa, 1, 0);
-
-    //leggera media e pesante, di cui la media condivisa
-    //aggiungi_configurazione_selettiva_custom(1, 1, 1, 0, 1, 0);
-
-    //leggera media e pesante, di cui la leggera condivisa e con 2 casse
-    //aggiungi_configurazione_selettiva_custom(2, 1, 1, 1, 0, 0);
-
-    //sbizzarrirsi...e automatizzare
-
-    //aggiungi_configurazione_cassa(condivisa, 3, 0);
-
-    //aggiungi_configurazione_cassa(pseudo_casuale, 3, 0);
-
-    //aggiungi_configurazione_selettiva_custom(3, 2, 1, 1, 0, 0);
-
-    //aggiungi_configurazione_cassa(pseudo_casuale, 6, 0);
-
-    //aggiungi_configurazione_cassa(condivisa, 6, 0);
-
-    //aggiungi_configurazione_selettiva_custom(1, 3, 1, 0, 1, 0);
-
     return "undefined";
 
 }
@@ -185,16 +148,12 @@ void simulazioni_ezio();
 
 void tutte_simulazioni_ezio(){
 
-    simulazioni_ezio(incr_2_10_cond, 2, 10);
-
-    /*
-
-    simulazioni_ezio(incr_2_10_pc, 2, 10);
-    simulazioni_ezio(incr_3_10_sel, 3, 10);
+    //simulazioni_ezio(incr_2_10_cond, 2, 10);
+    //simulazioni_ezio(incr_2_10_pc, 2, 10);
+    //simulazioni_ezio(incr_3_10_sel, 3, 10);
     simulazioni_ezio(incr_3_10_sel_cond, 3, 10);
     simulazioni_ezio(mista_3_x, 1, 7);
     simulazioni_ezio(mista_1_x, 1, 9);
-    */
 
 
 }
@@ -341,7 +300,7 @@ int minuti_sotto(int minuti){
 void simulazioni_ezio(int tipo_simulazione, int numero_iniziale_cassieri, int max_num_cassieri){
 
 
-    FILE *ff = fopen("simulation_results_ezio.csv","a");
+    FILE *ff = fopen("simulation_results_all.csv","a");
     if(ff == NULL)
     {
         printf("Impossibile creare/aprire file!");
@@ -485,23 +444,22 @@ void simulazioni_ezio(int tipo_simulazione, int numero_iniziale_cassieri, int ma
             ic_abb_l = Xnabb - (double)get_stud(alpha)*Snabb/sqrt(num_simulazioni);
             ic_abb_r = Xnabb + (double)get_stud(alpha)*Snabb/sqrt(num_simulazioni);
 
-            //TODO magari usare coefficienti diversi per calcolare costo mensile
             //calcolo del costo mensile del supermercato.
             double costo_mensile = num_cassieri*2*guadagno_mensile_cassieri - guadagno_attesa_cliente*minuti_sotto(Xnatt)*30*Xnarr + costo_abbandono_cliente*Xnabb*30;
 
-            fprintf(ff, "%s, %d, %s, \"[%s, %s]\", \"[%f, %f]\", \"[%s, %s]\", \"[%f, %f]\", \"[%f, %f]\", %d, %d, %d\n",
+            fprintf(ff, "%s, %d, %s, \"[%s; %s]\", \"[%f; %f]\", \"[%s; %s]\", \"[%f; %f]\", \"[%f; %f]\", %d, %f\n",
                     tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
                     secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
-                    massima_lunghezza_fila_tollerata, num_simulazioni, num_cassieri);
+                    massima_lunghezza_fila_tollerata, costo_mensile);
 
 
-            printf("%s, %d, %s, [%s, %s], [%f, %f], [%s, %s], [%f, %f], [%f, %f], %d, %d, %d, %f\n",
+            printf("%s, %d, %s, [%s; %s], [%f; %f], [%s; %s], [%f; %f], [%f; %f], %d, %f\n",
                    tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
-                   massima_lunghezza_fila_tollerata, num_simulazioni, num_cassieri, costo_mensile);
+                   massima_lunghezza_fila_tollerata, costo_mensile);
 
 
-            printf("Giorno: %s fatto, con %d num_casse\n", giorno_str(giorno_corrente), num_cassieri);
+            printf("Tipo test: %s, Giorno: %s fatto, con %d num_casse\n", tipo_config_str, giorno_str(giorno_corrente), num_cassieri);
 
             giorno_corrente++;
 

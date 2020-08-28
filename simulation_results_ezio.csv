@@ -1,4 +1,4 @@
-Tipo Cinfig. Cassa, Num Cassieri, Giorno, IC Tempo Attesa, IC Slowdown, IC SD Tempo Att, IC Abbandoni, IC Arrivi, Lungh. Fila Tollerata, Num Simulazioni, Costo Mensile
+Tipo Cinfig. Cassa, Num Cassieri, Giorno, IC Tempo Attesa, IC Slowdown, IC SD Tempo Att, IC Abbandoni, IC Arrivi, Lungh. Fila Tollerata, Num Cassieri, Costo Mensile
 Condivisa, 2, lunedì, [00:04:10, 00:04:14], [6.869721, 6.935046], [00:00:11, 00:00:42], [2117.239603, 2167.760397], [4084.800716, 4141.399284], 10, 20, 2
 Condivisa, 2, martedì, [00:04:11, 00:04:15], [6.903363, 6.989173], [00:00:11, 00:00:43], [1965.981621, 2024.818379], [3934.155351, 3987.744649], 10, 20, 2
 Condivisa, 2, mercoledì, [00:04:10, 00:04:14], [6.879757, 6.958649], [00:00:13, 00:00:51], [2193.610335, 2258.089665], [4162.401890, 4220.798110], 10, 20, 2
