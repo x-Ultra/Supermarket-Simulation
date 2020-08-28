@@ -15,6 +15,12 @@
 #define sperimentale_media_condivisa 10
 #define sperimentale_pesante_condivisa 11
 
+
+int minuti_sotto(int minuti){
+
+    return (double)(minuti_sopportati-minuti)/60;
+}
+
 // Ricava numero di casse in base alla percentuale
 int* get_split(int total, int first, int second, int third) {
 
@@ -144,163 +150,10 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
 
 }
 
-void simulazioni_ezio();
-
-void tutte_simulazioni_ezio(){
-
-    //simulazioni_ezio(incr_2_10_cond, 2, 10);
-    //simulazioni_ezio(incr_2_10_pc, 2, 10);
-    //simulazioni_ezio(incr_3_10_sel, 3, 10);
-    simulazioni_ezio(incr_3_10_sel_cond, 3, 10);
-    simulazioni_ezio(mista_3_x, 1, 7);
-    simulazioni_ezio(mista_1_x, 1, 9);
+void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num_cassieri){
 
 
-}
-
-
-int main() {
-
-    tutte_simulazioni_ezio();
-    return 0;
-
-
-    FILE *ff = fopen("simulation_results_ezio.csv", "a");
-    if(ff == NULL)
-    {
-        printf("Impossibile creare/aprire file!");
-        exit(1);
-    }
-
-    super_supermarket = 1;
-    super_factor = 10;
-
-    double alpha = 0.05;
-
-    int num_cassieri = 1;
-
-    int simu_id = sperimentale_pesante_condivisa;
-
-    for (int c = 4; c < 15; c++) {
-        giorno_corrente = lun;
-        
-        printf("Number of cashiers: %d\n", c);
-        do{
-
-            double medie[num_simulazioni];
-            double varianze[num_simulazioni];
-            double slowdowns[num_simulazioni];
-            int abbandoni_tot[num_simulazioni];
-            int arrivi_tot[num_simulazioni];
-
-            char *tipo_config_str;
-
-            int seed = SEED;
-
-            //fare num_ismulazioni per ogni giorno, commentare i risultati in base al giorno
-            for(int i = 0; i < num_simulazioni; ++i) {
-
-                eventi = NULL;
-                config_attive = NULL;
-                clienti_serviti = NULL;
-                arrivi_totali = 0;
-                abbandoni = 0;
-                attesa_media_corrente = 0;
-                varianza_tempo_attesa = 0;
-                slowdown_medio_corrente = 0;
-
-                tipo_config_str = inizializza(simu_id, c, seed);
-
-                seed++;
-
-                
-                //printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
-                start();
-                /*
-                printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n",
-                       giorno_corrente, secondi_ora((int) attesa_media_corrente), slowdown_medio_corrente);
-                printf("Deviazione std tempo d'attesa: %s\n", secondi_ora(sqrt(varianza_tempo_attesa)));
-                printf("Abbandoni: %d\n", abbandoni);
-                printf("Arrivi totali: %d\n", arrivi_totali);
-                */
-
-                //appendo dati
-                medie[i] = attesa_media_corrente;
-                varianze[i] = varianza_tempo_attesa;
-                slowdowns[i] = slowdown_medio_corrente;
-                arrivi_tot[i] = arrivi_totali;
-                abbandoni_tot[i] = abbandoni;
-
-                //printf("Done with simulation %d\n", i);
-
-            }
-
-            double ic_att_l = 0;
-            double ic_att_r = 0;
-
-            double ic_var_l = 0;
-            double ic_var_r = 0;
-
-            double ic_slow_l = 0;
-            double ic_slow_r = 0;
-
-            double ic_arr_l = 0;
-            double ic_arr_r = 0;
-
-            double ic_abb_l = 0;
-            double ic_abb_r = 0;
-
-            //Calcolo medie
-            for (int j = 0; j < num_simulazioni; j++) {
-
-                ic_att_l += medie[j];
-                ic_var_l += varianze[j];
-                ic_slow_l += slowdowns[j];
-                ic_arr_l += arrivi_tot[j];
-                ic_abb_l += abbandoni_tot[j];
-
-            }
-
-            ic_att_l = ic_att_l / num_simulazioni;
-            ic_var_l = ic_var_l / num_simulazioni;
-            ic_slow_l = ic_slow_l / num_simulazioni;
-            ic_arr_l = ic_arr_l / num_simulazioni;
-            ic_abb_l = ic_abb_l / num_simulazioni;
-
-            //Calcolo Deviazione standard
-            for (int j = 0; j < num_simulazioni; j++) {
-                ic_att_r += pow(medie[j] - ic_att_l, 2);     
-                ic_var_r += pow(varianze[j] - ic_var_l, 2);
-                ic_slow_r += pow(slowdowns[j] - ic_slow_l, 2);
-                ic_arr_r += pow(arrivi_tot[j] - ic_arr_l, 2);
-                ic_abb_r += pow(abbandoni_tot[j] - ic_abb_l, 2);
-            }
-
-            ic_att_r = sqrt(ic_att_r / num_simulazioni);
-            ic_var_r = sqrt(ic_var_r / num_simulazioni);
-            ic_slow_r = sqrt(ic_slow_r / num_simulazioni);
-            ic_arr_r = sqrt(ic_arr_r / num_simulazioni);
-            ic_abb_r = sqrt(ic_abb_r / num_simulazioni);
-
-            fprintf(ff, "%d, %s, %d, %s, \"[%f, %f]\", \"[%f, %f]\", \"[%f, %f]\", \"[%f, %f]\", \"[%f, %f]\", %d, %d, %f\n", simu_id, tipo_config_str, num_cassieri, giorno_str(giorno_corrente), ic_att_l, ic_att_r, ic_slow_l, ic_slow_r, ic_var_l, ic_var_r, ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r, massima_lunghezza_fila_tollerata, num_simulazioni, alpha);
-
-            printf("Done with day %d\n", giorno_corrente);
-            giorno_corrente++;
-        } while(giorno_corrente <= dom);
-    }
-    fclose(ff);
-}
-
-int minuti_sotto(int minuti){
-
-    return (double)(minuti_sopportati-minuti)/60;
-}
-
-
-void simulazioni_ezio(int tipo_simulazione, int numero_iniziale_cassieri, int max_num_cassieri){
-
-
-    FILE *ff = fopen("simulation_results_all.csv","a");
+    FILE *ff = fopen("simulation_results_all_test.csv","a");
     if(ff == NULL)
     {
         printf("Impossibile creare/aprire file!");
@@ -468,4 +321,30 @@ void simulazioni_ezio(int tipo_simulazione, int numero_iniziale_cassieri, int ma
     }
 
     fclose(ff);
+}
+
+
+
+void tutte_simulazioni(){
+
+    simulazioni(sperimentale_60_20_20, 4, 10);
+    simulazioni(sperimentale_20_60_20, 4, 10);
+    simulazioni(sperimentale_20_20_60, 4, 10);
+
+    simulazioni(sperimentale_leggera_condivisa, 4, 10);
+    simulazioni(sperimentale_media_condivisa, 4, 10);
+    simulazioni(sperimentale_pesante_condivisa, 4, 10);
+    //simulazioni_ezio(incr_2_10_cond, 2, 10);
+    //simulazioni_ezio(incr_2_10_pc, 2, 10);
+    //simulazioni_ezio(incr_3_10_sel, 3, 10);
+    //simulazioni_ezio(incr_3_10_sel_cond, 3, 10);
+    //simulazioni_ezio(mista_3_x, 1, 7);
+    //simulazioni_ezio(mista_1_x, 1, 9);
+
+}
+
+int main() {
+
+    tutte_simulazioni();
+    return 0;
 }
