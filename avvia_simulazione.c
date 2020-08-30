@@ -146,6 +146,9 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
             return str;
     }
 
+    //lasciato per test manuale
+    aggiungi_configurazione_cassa(condivisa, num_casse, 0);
+
     return "undefined";
 
 }
@@ -199,13 +202,6 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
 
                 //printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
                 start();
-                /*
-                printf("Simulazione giorno %d terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n",
-                       giorno_corrente, secondi_ora((int) attesa_media_corrente), slowdown_medio_corrente);
-                printf("Deviazione std tempo d'attesa: %s\n", secondi_ora(sqrt(varianza_tempo_attesa)));
-                printf("Abbandoni: %d\n", abbandoni);
-                printf("Arrivi totali: %d\n", arrivi_totali);
-                 */
 
                 //appendo dati
                 medie_att[i] = attesa_media_corrente;
@@ -316,11 +312,99 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
 
             giorno_corrente++;
 
-
         } while (giorno_corrente <= dom);
     }
 
     fclose(ff);
+}
+
+
+void test_manuale(){
+
+    int seed = 94823498;
+    PlantSeeds(seed);
+
+    super_supermarket = 0;
+    super_factor = 10;
+
+    //per vedere se si avvicina alle formule teoriche
+    //sì con condivisa
+    //si per multiserver ?
+
+    validazione = 1;
+    mu_valid = 2400;
+    lambda_valid = 1600;
+
+    //coda 'infinita'
+    massima_lunghezza_fila_tollerata = 1000000;
+
+    eventi = NULL;
+    config_attive = NULL;
+    clienti_serviti = NULL;
+    arrivi_totali = 0;
+    abbandoni = 0;
+    attesa_media_corrente = 0;
+    varianza_tempo_attesa = 0;
+    slowdown_medio_corrente = 0;
+
+    //single server queue
+    aggiungi_configurazione_cassa(condivisa, 1, 0);
+    //mu = 600
+    //lambda = 500
+    //8593 arrivi
+    //E[Tq] = 30 secondi --> (nella simulazione esce 24) !
+
+    //mu = 1000
+    //lambda = 900
+    //16396 arrivi
+    //E[Tq] = 32.4 secondi --> (nella simulazione esce 27) !
+
+    //mu = 2400
+    //lambda = 1600
+    //32195 arrivi
+    //E[Tq] = 3 secondi --> (nella simulazione esce 2) !
+
+    //aumentando lambda, aumentiamo il numero di clienti in arrivo e
+    //ci avviciniamo ad uno studio stazionario.
+    //tale tipo di studio ha fini strettamente legati alla validazione, nella realtà
+    //è assai improbabile difatti avere 30mila arrivi giornalieri in un supermercato,
+    //dunque non ha senso effettuare uno studio transiente nel sistema oggetto di stusio.
+
+
+
+    //multi server queue con 3 serventi
+    //aggiungi_configurazione_cassa(condivisa, 3, 0);
+    //multiserver con 3 serventi
+    //ro = 2/3
+    //p(0) = 0.138461
+    //Pq = 0.553844
+
+    //mu_i = 200
+    //lambda = 400
+    //6740 arrivi
+    //E[Tq] = 9.96 secondi --> (nella simulazione esce 8)
+
+    //mu_i = 400
+    //lambda = 800
+    //14439 arrivi
+    //E[Tq] = 4.98 secondi --> (nella simulazione esce 6)
+
+    //mu_i = 800
+    //lambda = 1600
+    //32195 arrivi
+    //E[Tq] = 2.49 secondi --> (nella simulazione esce 4)
+
+    start();
+
+    printf("Simulazione giorno %s terminata\nMedia attesa registrata: %s\nSlowdown medio: %f\n",
+           giorno_str(giorno_corrente), secondi_ora((int) attesa_media_corrente), slowdown_medio_corrente);
+    printf("Deviazione std tempo d'attesa: %s\n", secondi_ora(sqrt(varianza_tempo_attesa)));
+    printf("Abbandoni: %d\n", abbandoni);
+    printf("Arrivi totali: %d\n", arrivi_totali);
+
+    info_su_configurazioni_attive();
+
+    //stampa_tutti_eventi();
 }
 
 
@@ -330,21 +414,21 @@ void tutte_simulazioni(){
     simulazioni(sperimentale_60_20_20, 4, 10);
     simulazioni(sperimentale_20_60_20, 4, 10);
     simulazioni(sperimentale_20_20_60, 4, 10);
-
     simulazioni(sperimentale_leggera_condivisa, 4, 10);
     simulazioni(sperimentale_media_condivisa, 4, 10);
     simulazioni(sperimentale_pesante_condivisa, 4, 10);
-    //simulazioni_ezio(incr_2_10_cond, 2, 10);
-    //simulazioni_ezio(incr_2_10_pc, 2, 10);
-    //simulazioni_ezio(incr_3_10_sel, 3, 10);
-    //simulazioni_ezio(incr_3_10_sel_cond, 3, 10);
-    //simulazioni_ezio(mista_3_x, 1, 7);
-    //simulazioni_ezio(mista_1_x, 1, 9);
+    simulazioni(incr_2_10_cond, 2, 10);
+    simulazioni(incr_2_10_pc, 2, 10);
+    simulazioni(incr_3_10_sel, 3, 10);
+    simulazioni(incr_3_10_sel_cond, 3, 10);
+    simulazioni(mista_3_x, 1, 7);
+    simulazioni(mista_1_x, 1, 9);
 
 }
 
 int main() {
 
-    tutte_simulazioni();
+    test_manuale();
+    //tutte_simulazioni();
     return 0;
 }

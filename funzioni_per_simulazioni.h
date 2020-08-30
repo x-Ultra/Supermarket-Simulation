@@ -349,8 +349,6 @@ void start(){
 
     popola_arrivi(giorno_corrente);
 
-    //stampa_tutti_eventi();
-
     struct evento *evento_corrente;
 
     //scorro gli eventi
@@ -388,7 +386,6 @@ void start(){
 
             servi_prossimo_cliente(evento_corrente->fila->cliente_in_fila, evento_corrente);
         }
-
 
         D(printf("\n"));
         D(stampa_evento(evento_corrente));

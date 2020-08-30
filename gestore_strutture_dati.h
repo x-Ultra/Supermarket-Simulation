@@ -488,7 +488,7 @@ int aggiungi_evento(int tipo, int ora_evento, struct fila_cassa *fila){
         //inseriscilo dopo la testa
         struct lista_eventi *curr = eventi;
         struct lista_eventi *prev = NULL;
-        while (curr != NULL && curr->evento->tempo < ora_evento) {
+        while (curr != NULL && curr->evento->tempo <= ora_evento) {
             prev = curr;
             curr = curr->next;
         }
@@ -780,6 +780,10 @@ double genera_arrivo(int ora, int giorno_settimana){
 
     }
 
+    if(validazione){
+        media_arr = lambda_valid;
+    }
+
     if(super_supermarket){
         media_arr = media_arr*super_factor;
     }
@@ -792,6 +796,13 @@ void genera_evento_servito(struct cliente *c){
     int n = c->num_oggetti;
 
     double tempo_di_servizio = A*n+B;
+
+    //tempo di servizio esponenziale in caso di test manuale
+    if(validazione){
+        tempo_di_servizio = Exponential((double)1/((double)mu_valid/60/60), 0);
+        aggiungi_evento(servito, (int)tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));
+        return;
+    }
 
     //passo l'approssimazione intera in secondi del tempo di servizio
     aggiungi_evento(servito, (int)tempo_di_servizio + c->iniziato_a_servire , *(c->fila_scelta));

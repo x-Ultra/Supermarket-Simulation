@@ -351,6 +351,12 @@ int num_simulazioni = 20;
 double A = 2.61;
 double B = 20.56;
 
+//prova per validazione
+int validazione = 0;
+//arrivi e smaltimenti al secondo
+int mu_valid = 50;
+int lambda_valid = 10;
+
 //id per file
 int file_ids = 0;
 
