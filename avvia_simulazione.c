@@ -382,14 +382,14 @@ void test_manuale(){
 
 void tutte_simulazioni(){
 
-    simulazioni(sperimentale_60_20_20, 4, 10);
-    simulazioni(sperimentale_20_60_20, 4, 10);
-    simulazioni(sperimentale_20_20_60, 4, 10);
-    simulazioni(sperimentale_leggera_condivisa, 4, 10);
-    simulazioni(sperimentale_media_condivisa, 4, 10);
-    simulazioni(sperimentale_pesante_condivisa, 4, 10);
-    simulazioni(incr_2_10_cond, 2, 10);
-    simulazioni(incr_2_10_pc, 2, 10);
+    //simulazioni(sperimentale_60_20_20, 4, 10);
+    //simulazioni(sperimentale_20_60_20, 4, 10);
+    //simulazioni(sperimentale_20_20_60, 4, 10);
+    //simulazioni(sperimentale_leggera_condivisa, 4, 10);
+    //simulazioni(sperimentale_media_condivisa, 4, 10);
+    //simulazioni(sperimentale_pesante_condivisa, 4, 10);
+    //simulazioni(incr_2_10_cond, 2, 10);
+    //simulazioni(incr_2_10_pc, 2, 10);
     simulazioni(incr_3_10_sel, 3, 10);
     simulazioni(incr_3_10_sel_cond, 3, 10);
     simulazioni(mista_3_x, 1, 7);
