@@ -47,9 +47,9 @@ int* get_split(int total, int first, int second, int third) {
 //inizializza simulazione (eg. setta i semi, tipi di configurazioni di cassa in base ai cassieri....)
 // num_simulazione ne definisca il tipo di cassa, num_casse il numero di casse
 //ritorna il tipo di configurazione usato, in formato stringa
-char *inizializza(int num_simulazione, int num_casse, int seed){
+char *inizializza(int num_simulazione, int num_casse){
 
-    PlantSeeds(seed);
+    PlantSeeds(SEED);
 
     int* nums;
 
@@ -168,7 +168,6 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
     super_factor = 10;
 
     int alpha = 5;
-    int seed;
 
     for(int num_cassieri = numero_iniziale_cassieri; num_cassieri <= max_num_cassieri; num_cassieri++) {
 
@@ -182,13 +181,10 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
 
             char *tipo_config_str;
 
-            seed = 94823498;
-
             //fare num_ismulazioni per ogni giorno, commentare i risultati in base al giorno
             for (int i = 0; i < num_simulazioni; ++i) {
 
-                seed = seed - 1;
-
+                simulazione_corrente = i;
                 eventi = NULL;
                 config_attive = NULL;
                 clienti_serviti = NULL;
@@ -199,7 +195,7 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
                 slowdown_medio_corrente = 0;
 
 
-                tipo_config_str = inizializza(tipo_simulazione, num_cassieri, seed);
+                tipo_config_str = inizializza(tipo_simulazione, num_cassieri);
 
                 //printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
                 start();

@@ -16,34 +16,15 @@ void stampa_num_eventi(int num);
 
 double Exponential(double media, int shift){
 
-    //rand rappresenta il valore della
-    //funzione di ditrubuzione e il valore ritornato
-    //e' il valore critoco ad esso associato:
-    //return F^-1(rand);
-
-
-    //tronco in questo modo (da 1 a infinito)
-
-    //alpha = F(1)(media) = 0.qualcosa
-    //trovo x | x/RAND_MAX = 0.qualcosa
-
-    //genero da x in poi
-    //(RAND_MAX-x)*(random()/RAND_MAX) +x = Y
-    //(random genera numeri da 0 a RAND_MAX)
-
-
-    //printf("%f\n", media);
-
-    //rand = Y/(RAND_MAX-x)
     if(shift){
-        SelectStream(0);
+        //1, 3, 5, 7, 9...
+        SelectStream(1+simulazione_corrente*2);
         return -media*log(1.0-Random()) +1;
     }
-
+    //0, 2, 4, 6, 8, 10...
+    SelectStream(2*simulazione_corrente);
     float rand = Random();
-    //printf("media oraria: %f, inverso:%f exp: %f, count: %d\n", (1/media)*60*60, media, -media*log(1.0-rand), count);
-    
-    SelectStream(1);
+
     //printf("%f\n", -media*log(1.0-Random()));
     return -media*log(1.0-rand);
 }
