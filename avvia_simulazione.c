@@ -30,7 +30,7 @@ int* get_split(int total, int first, int second, int third) {
     perc[0] = (int) total * (first*1.0 / 100);
     perc[1] = (int) total * (second*1.0 / 100);
     perc[2] = (int) total * (third*1.0 / 100);
-    
+
     int curr = 2;
 
 
@@ -47,9 +47,9 @@ int* get_split(int total, int first, int second, int third) {
 //inizializza simulazione (eg. setta i semi, tipi di configurazioni di cassa in base ai cassieri....)
 // num_simulazione ne definisca il tipo di cassa, num_casse il numero di casse
 //ritorna il tipo di configurazione usato, in formato stringa
-char *inizializza(int num_simulazione, int num_casse, int seed){
+char *inizializza(int num_simulazione, int num_casse){
 
-    PlantSeeds(seed);
+    PlantSeeds(SEED);
 
     int* nums;
 
@@ -61,32 +61,32 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
 
         case pseudo_casuale_s:
             aggiungi_configurazione_cassa(pseudo_casuale, num_casse, 0);
-        return "pseudo_casuale";
+            return "pseudo_casuale";
 
         case sperimentale_60_20_20:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[0], nums[1], nums[2], 1, 1, 1);
             free(nums);
-        return "sperimentale_60_20_20";
-            
+            return "sperimentale_60_20_20";
+
         case sperimentale_20_60_20:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[1], nums[0], nums[2], 1, 1, 1);
             free(nums);
-        return "sperimentale_20_60_20";
+            return "sperimentale_20_60_20";
 
         case sperimentale_20_20_60:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[2], nums[1], nums[0], 1, 1, 1);
             free(nums);
-        return "sperimentale_20_20_60";
+            return "sperimentale_20_20_60";
 
         case sperimentale_leggera_condivisa:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[0], 0, 0, 1, 1, 1);
             aggiungi_configurazione_cassa(condivisa, nums[1]+nums[2], 0);
             free(nums);
-        return "sperimentale_leggera_condivisa";
+            return "sperimentale_leggera_condivisa";
 
         case sperimentale_media_condivisa:
             nums = get_split(num_casse, 60, 20, 20);
@@ -95,14 +95,14 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
             aggiungi_configurazione_cassa(condivisa, nums[1]+nums[2], 0);
             //info_su_configurazioni_attive();
             free(nums);
-        return "sperimentale_media_condivisa";
+            return "sperimentale_media_condivisa";
 
         case sperimentale_pesante_condivisa:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(0, 0, nums[0], 1, 1, 1);
             aggiungi_configurazione_cassa(condivisa, nums[1]+nums[2], 0);
             free(nums);
-        return "sperimentale_pesante_condivisa";
+            return "sperimentale_pesante_condivisa";
 
         case incr_2_10_cond:
             aggiungi_configurazione_cassa(condivisa, num_casse, 0);
@@ -168,7 +168,6 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
     super_factor = 10;
 
     int alpha = 5;
-    int seed;
 
     for(int num_cassieri = numero_iniziale_cassieri; num_cassieri <= max_num_cassieri; num_cassieri++) {
 
@@ -182,13 +181,10 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
 
             char *tipo_config_str;
 
-            seed = 94823498;
-
             //fare num_ismulazioni per ogni giorno, commentare i risultati in base al giorno
             for (int i = 0; i < num_simulazioni; ++i) {
 
-                seed = seed - 1;
-
+                simulazione_corrente = i;
                 eventi = NULL;
                 config_attive = NULL;
                 clienti_serviti = NULL;
@@ -199,7 +195,7 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
                 slowdown_medio_corrente = 0;
 
 
-                tipo_config_str = inizializza(tipo_simulazione, num_cassieri, seed);
+                tipo_config_str = inizializza(tipo_simulazione, num_cassieri);
 
                 //printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
                 start();
@@ -295,7 +291,7 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             ic_abb_r = Xnabb + (double)get_stud(alpha)*Snabb/sqrt(num_simulazioni);
 
             //calcolo del costo mensile del supermercato.
-            double costo_mensile = num_cassieri*2*guadagno_mensile_cassieri - guadagno_attesa_cliente*minuti_sotto(Xnatt)*30*Xnarr + costo_abbandono_cliente*Xnabb*30;
+            double costo_mensile = num_cassieri*2*guadagno_mensile_cassieri - guadagno_attesa_cliente*minuti_sotto(Xnatt)*4*Xnarr + costo_abbandono_cliente*Xnabb*4;
 
             fprintf(ff, "%s, %d, %s, \"[%s; %s]\", \"[%f; %f]\", \"[%s; %s]\", \"[%f; %f]\", \"[%f; %f]\", %d, %f\n",
                     tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
@@ -325,19 +321,22 @@ void test_manuale(){
     int seed = 94823498;
     PlantSeeds(seed);
 
-    super_supermarket = 0;
+    //imponendo super_supermarket = 1 si aumenta di un fattore
+    //pari a super_factor il flusso di arrivo dei clienti
+    super_supermarket = 1;
     super_factor = 10;
 
-    //per vedere se si avvicina alle formule teoriche
-    //sì con condivisa
-    //si per multiserver ?
-
-    validazione = 1;
+    //imponendo validazione = 1, si fissano costanti mu_valid e lambda_valid.
+    //(usato per validazione)
+    validazione = 0;
     mu_valid = 2400;
     lambda_valid = 1600;
 
     //coda 'infinita'
     massima_lunghezza_fila_tollerata = 1000000;
+
+    //coda non infinita
+    massima_lunghezza_fila_tollerata = 10;
 
     eventi = NULL;
     config_attive = NULL;
@@ -348,52 +347,30 @@ void test_manuale(){
     varianza_tempo_attesa = 0;
     slowdown_medio_corrente = 0;
 
-    //single server queue
+    //inserire qui la configurazione che si vuol testare
+    //o decommentare una di queste
+
+    //CONDIVISA
     aggiungi_configurazione_cassa(condivisa, 1, 0);
-    //mu = 600
-    //lambda = 500
-    //8593 arrivi
-    //E[Tq] = 30 secondi --> (nella simulazione esce 24) !
+    //aggiungi_configurazione_cassa(condivisa, 2, 0);
+    //aggiungi_configurazione_cassa(condivisa, 4, 0);
 
-    //mu = 1000
-    //lambda = 900
-    //16396 arrivi
-    //E[Tq] = 32.4 secondi --> (nella simulazione esce 27) !
+    //PSEUDO-CASUALE
+    //aggiungi_configurazione_cassa(pseudo_casuale, 1, 0);
+    //aggiungi_configurazione_cassa(pseudo_casuale, 2, 0);
+    //aggiungi_configurazione_cassa(pseudo_casuale, 4, 0);
 
-    //mu = 2400
-    //lambda = 1600
-    //32195 arrivi
-    //E[Tq] = 3 secondi --> (nella simulazione esce 2) !
+    //SOLO SELETTIVE
+    //aggiungi_configurazione_cassa(mista, 3, 0);
 
-    //aumentando lambda, aumentiamo il numero di clienti in arrivo e
-    //ci avviciniamo ad uno studio stazionario.
-    //tale tipo di studio ha fini strettamente legati alla validazione, nella realtà
-    //è assai improbabile difatti avere 30mila arrivi giornalieri in un supermercato,
-    //dunque non ha senso effettuare uno studio transiente nel sistema oggetto di stusio.
+    //MISTA e una condivisa
+    //con solo leggera
+    //aggiungi_configurazione_cassa(mista, 2, 1);
+    //media e pesante
+    //aggiungi_configurazione_cassa(mista, 3, 1);
+    //tutte le selettive
+    //aggiungi_configurazione_cassa(mista, 4, 1);
 
-
-
-    //multi server queue con 3 serventi
-    //aggiungi_configurazione_cassa(condivisa, 3, 0);
-    //multiserver con 3 serventi
-    //ro = 2/3
-    //p(0) = 0.138461
-    //Pq = 0.553844
-
-    //mu_i = 200
-    //lambda = 400
-    //6740 arrivi
-    //E[Tq] = 9.96 secondi --> (nella simulazione esce 8)
-
-    //mu_i = 400
-    //lambda = 800
-    //14439 arrivi
-    //E[Tq] = 4.98 secondi --> (nella simulazione esce 6)
-
-    //mu_i = 800
-    //lambda = 1600
-    //32195 arrivi
-    //E[Tq] = 2.49 secondi --> (nella simulazione esce 4)
 
     start();
 
@@ -402,10 +379,6 @@ void test_manuale(){
     printf("Deviazione std tempo d'attesa: %s\n", secondi_ora(sqrt(varianza_tempo_attesa)));
     printf("Abbandoni: %d\n", abbandoni);
     printf("Arrivi totali: %d\n", arrivi_totali);
-
-    info_su_configurazioni_attive();
-
-    //stampa_tutti_eventi();
 }
 
 
