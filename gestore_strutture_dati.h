@@ -18,11 +18,11 @@ double Exponential(double media, int shift){
 
     if(shift){
         //1, 3, 5, 7, 9...
-        SelectStream(1+simulazione_corrente*2);
+        SelectStream(0);
         return -media*log(1.0-Random()) +1;
     }
     //0, 2, 4, 6, 8, 10...
-    SelectStream(2*simulazione_corrente);
+    SelectStream(1);
     float rand = Random();
 
     //printf("%f\n", -media*log(1.0-Random()));

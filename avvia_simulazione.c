@@ -49,8 +49,6 @@ int* get_split(int total, int first, int second, int third) {
 //ritorna il tipo di configurazione usato, in formato stringa
 char *inizializza(int num_simulazione, int num_casse){
 
-    PlantSeeds(SEED);
-
     int* nums;
 
     int legg = 0, med = 0, pes = 0;
@@ -184,7 +182,6 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             //fare num_ismulazioni per ogni giorno, commentare i risultati in base al giorno
             for (int i = 0; i < num_simulazioni; ++i) {
 
-                simulazione_corrente = i;
                 eventi = NULL;
                 config_attive = NULL;
                 clienti_serviti = NULL;
@@ -402,6 +399,8 @@ void tutte_simulazioni(){
 
 int main() {
 
+
+    PlantSeeds(SEED);
     //test_manuale();
     tutte_simulazioni();
     return 0;
