@@ -16,6 +16,7 @@
 #define sperimentale_pesante_condivisa 11
 
 
+
 int minuti_sotto(int minuti){
 
     return (double)(minuti_sopportati-minuti)/60;
@@ -156,7 +157,7 @@ char *inizializza(int num_simulazione, int num_casse, int seed){
 void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num_cassieri){
 
 
-    FILE *ff = fopen("simulation_results_all_test.csv","a");
+    FILE *ff = fopen("simulation_results_all.csv","a");
     if(ff == NULL)
     {
         printf("Impossibile creare/aprire file!");
@@ -302,11 +303,11 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
                     massima_lunghezza_fila_tollerata, costo_mensile);
 
 
-            printf("%s, %d, %s, [%s; %s], [%f; %f], [%s; %s], [%f; %f], [%f; %f], %d, %f\n",
+            /*printf("%s, %d, %s, [%s; %s], [%f; %f], [%s; %s], [%f; %f], [%f; %f], %d, %f\n",
                    tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
                    massima_lunghezza_fila_tollerata, costo_mensile);
-
+            */
 
             printf("Tipo test: %s, Giorno: %s fatto, con %d num_casse\n", tipo_config_str, giorno_str(giorno_corrente), num_cassieri);
 
@@ -428,7 +429,7 @@ void tutte_simulazioni(){
 
 int main() {
 
-    test_manuale();
-    //tutte_simulazioni();
+    //test_manuale();
+    tutte_simulazioni();
     return 0;
 }

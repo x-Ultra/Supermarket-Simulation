@@ -1,0 +1,26 @@
+COMPILAZIONE
+---------------------------
+
+Per compilare i file e ottenere l'eseguile si può utilizzare il Makefile presente nella cartella, sono disponibili due modalità:
+- comando "make", simulazione normale
+- comando "make debug", simulazione rallentata in modalità debug
+
+In modalità debug la simulazione avviene a velocità ridotta e con stampe che permetteno di osservare lo svolgimento degli eventi.
+
+SIMULAZIONI
+---------------------------
+
+Il codice come è stato consegnato eseguirà le simulazioni per tutte le configurazioni descritte nella relazione.
+
+Se si vuole osservare una particolare configurazione o se si vuole cambiare il numero di cassieri bisogna:
+
+- Aprire il file "avvia_simulazione.c"
+- Scorrere in fondo fino alla funzione "tutte_simulazioni"
+- Commentare/cambiare le simulazioni (il primo parametro è il tipo di simulazione, il secondo il minimo numero di cassieri, il terzo il massimo)
+- Ricompilare il codice
+
+Alla fine della simulazione, il risultato, seprato per giornata, verrà salvato nel file "simulation_results_all.csv".
+
+Nel file "simulation_results_all.csv" sono ancora presenti i risultati di tutte le nostre simulazioni.
+
+
