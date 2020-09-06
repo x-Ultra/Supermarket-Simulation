@@ -319,9 +319,6 @@ struct config_cassa_attive *config_attive = NULL;
 //lista di eventi
 struct lista_eventi *eventi = NULL;
 
-//lista di tutti i clienti serviti
-struct fila_cassa *clienti_serviti = NULL;
-
 //per monitorare l'arrivo e gli abbandonidei clienti
 int arrivi_totali = 0;
 int abbandoni = 0;

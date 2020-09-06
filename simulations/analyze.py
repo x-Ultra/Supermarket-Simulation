@@ -36,7 +36,7 @@ def hour_ic_to_list(ic):
 def get_average(ic):
 	return int(ic[0]) + (int(ic[1]) - int(ic[0]))/2
 
-# fd = open('../simulation_results_ezio.csv', newline='')
+# fd = open('../simulation_results_all.csv', newline='')
 # results = csv.reader(fd, delimiter=',', quotechar='"')
 
 # num_cassieri = [i for i in range(4, 11)]

@@ -182,9 +182,13 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             //fare num_ismulazioni per ogni giorno, commentare i risultati in base al giorno
             for (int i = 0; i < num_simulazioni; ++i) {
 
+                if(config_attive != NULL){
+
+                    free_configurazioni();
+                }
                 eventi = NULL;
                 config_attive = NULL;
-                clienti_serviti = NULL;
+
                 arrivi_totali = 0;
                 abbandoni = 0;
                 attesa_media_corrente = 0;
@@ -229,9 +233,9 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             double Snabb = 0;
 
             double t_alpha_mezzi = get_stud(alpha);
-            double z_alpha_mezzi = get_gauss(alpha);
 
-            if(t_alpha_mezzi == -1 || z_alpha_mezzi == -1){
+
+            if(t_alpha_mezzi == -1){
                 printf("Alpha value not supported\n");
                 return;
             }
@@ -295,7 +299,6 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
                     secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
                     massima_lunghezza_fila_tollerata, costo_mensile);
 
-
             /*printf("%s, %d, %s, [%s; %s], [%f; %f], [%s; %s], [%f; %f], [%f; %f], %d, %f\n",
                    tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
@@ -314,9 +317,6 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
 
 
 void test_manuale(){
-
-    int seed = 94823498;
-    PlantSeeds(seed);
 
     //imponendo super_supermarket = 1 si aumenta di un fattore
     //pari a super_factor il flusso di arrivo dei clienti
@@ -337,7 +337,6 @@ void test_manuale(){
 
     eventi = NULL;
     config_attive = NULL;
-    clienti_serviti = NULL;
     arrivi_totali = 0;
     abbandoni = 0;
     attesa_media_corrente = 0;
@@ -379,20 +378,22 @@ void test_manuale(){
 }
 
 
+#include <pthread.h>
 
 void tutte_simulazioni(){
+
 
     simulazioni(sperimentale_60_20_20, 4, 10);
     simulazioni(sperimentale_20_60_20, 4, 10);
     simulazioni(sperimentale_20_20_60, 4, 10);
     simulazioni(sperimentale_leggera_condivisa, 4, 10);
     simulazioni(sperimentale_media_condivisa, 4, 10);
-    simulazioni(sperimentale_pesante_condivisa, 4, 10);
-    simulazioni(incr_2_10_cond, 2, 10);
-    simulazioni(incr_2_10_pc, 2, 10);
-    simulazioni(incr_3_10_sel, 3, 10);
-    simulazioni(incr_3_10_sel_cond, 3, 10);
-    simulazioni(mista_3_x, 1, 7);
+    //simulazioni(sperimentale_pesante_condivisa, 4, 10);
+    //simulazioni(incr_2_10_cond, 2, 10);
+    //simulazioni(incr_2_10_pc, 2, 10);
+    //simulazioni(incr_3_10_sel, 3, 10);
+    //simulazioni(incr_3_10_sel_cond, 3, 10);
+    //simulazioni(mista_3_x, 1, 7); <---- !
     simulazioni(mista_1_x, 1, 9);
 
 }

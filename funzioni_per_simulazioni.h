@@ -225,17 +225,6 @@ int scegli_fila(struct cliente *cli, struct evento *e){
 //aggiungendolo poi in una lista di clienti serviti (clienti_serviti)
 int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
 
-    //servi il cliente, aggiungendolo nei clienti serviti
-    struct fila_cassa **fc = &clienti_serviti;
-    while(*fc != NULL){
-
-        fc = &((struct fila_cassa *)*fc)->next;
-    }
-
-    *fc = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
-    ((struct fila_cassa *)*fc)->next = NULL;
-    ((struct fila_cassa *)*fc)->cliente_in_fila = cli;
-
     //aggiorno i tempi del cliente, una volta servito
     cli->servito_alle = e->tempo;
     cli->attesa_in_fila = cli->iniziato_a_servire - cli->in_fila;
@@ -271,8 +260,10 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
 
     }
 
+    struct fila_cassa *temp =((struct fila_cassa *)*(cli->fila_scelta));
     //Scorri la fila, deve cambiare per tutti !, cambiamento visibile a tutti.
     *(cli->fila_scelta) = ((struct fila_cassa *)*(cli->fila_scelta))->next;
+    free(temp);
     D(printf("La fila %d scorre in avanti\n",((struct fila_cassa *)*(cli->fila_scelta))->id));
 
     //il cliente ha liberato la cassa di una fila condivisa, se ha scelto una config. con fila condivisa.
@@ -340,6 +331,8 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
         }
     }
 
+    free(cli);
+
     return 0;
 }
 
@@ -366,7 +359,6 @@ void start(){
 
             scegli_fila(cliente, evento_corrente);
 
-    
 
             D(printf("Nuovo cliente %d aggiunto in fila\n", cliente->id));
 
@@ -386,6 +378,9 @@ void start(){
 
             servi_prossimo_cliente(evento_corrente->fila->cliente_in_fila, evento_corrente);
         }
+
+        //elimina l'evento una volta gestito
+        free(evento_corrente);
 
         D(printf("\n"));
         D(stampa_evento(evento_corrente));

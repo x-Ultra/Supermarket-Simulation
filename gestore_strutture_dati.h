@@ -918,6 +918,25 @@ void info_su_configurazioni_attive(){
     }
 }
 
+void free_configurazioni(){
+
+
+    for(struct config_cassa_attive *current = config_attive; current != NULL; current = current->next){
+
+        for(struct casse *casse = current->configurazione_cassa->casse; casse != NULL; casse = casse->next){
+
+            for(struct fila_cassa *fila = casse->fila_cassa; fila != NULL; fila = fila->next){
+
+                free(fila);
+            }
+            free(casse);
+        }
+        free(current->configurazione_cassa);
+        free(current);
+    }
+
+}
+
 
 char* tipo_evento_str(int tipo){
 
@@ -1031,31 +1050,6 @@ double get_stud(int alpha){
     return critial;
 
 }
-
-
-double get_gauss(int alpha){
-    double critial = -1;
-
-    switch (alpha){
-        case 1:
-            critial = 3.32;
-            break;
-        case 2:
-            critial = 2.33;
-            break;
-        case 5:
-            critial = 1.96;
-            break;
-        case 10:
-            critial = 1.64;
-            break;
-        default:
-            break;
-    }
-
-    return critial;
-}
-
 
 
 
