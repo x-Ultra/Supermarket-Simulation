@@ -13,7 +13,7 @@ def create_bar_plot(tags, values):
 	fig, ax = plt.subplots()
 
 	for value,tag in zip(values,tags):
-	    ax.bar(tag,abs(value),color='b')
+	    ax.bar(tag,value,color='b')
 
 
 	plt.ylabel("Valore della funzione")
@@ -82,8 +82,7 @@ for i in range(0, len(ics_abbandoni)):
 
 print(ics_abbandoni)
 
-
 create_box_plot(tags, ics_abbandoni, "pippo")
 #create_box_plot(tags, ics_attesa, "wait_box_plot.png")
 
-#create_bar_plot(tags, formula)
+create_bar_plot(tags, formula)
