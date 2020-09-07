@@ -124,8 +124,8 @@ struct lista_eventi{
 #define selettiva_str "Selettiva"
 
 //margini destri di acquisti per casse selettive
-#define acquisti_leggeri 8
-#define acquisti_medi 18
+#define acquisti_leggeri 10
+#define acquisti_medi 20
 
 #define mista 6
 #define mista_str "Mista"
