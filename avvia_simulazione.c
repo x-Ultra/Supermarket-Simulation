@@ -355,7 +355,7 @@ void test_manuale(){
     //o decommentare una di queste
 
     //CONDIVISA
-    aggiungi_configurazione_cassa(condivisa, 1, 0);
+    //aggiungi_configurazione_cassa(condivisa, 1, 0);
     //aggiungi_configurazione_cassa(condivisa, 2, 0);
     //aggiungi_configurazione_cassa(condivisa, 4, 0);
 
@@ -373,7 +373,7 @@ void test_manuale(){
     //media e pesante
     //aggiungi_configurazione_cassa(mista, 3, 1);
     //tutte le selettive
-    //aggiungi_configurazione_cassa(mista, 4, 1);
+    aggiungi_configurazione_cassa(mista, 4, 1);
 
 
     start();
@@ -384,7 +384,6 @@ void test_manuale(){
     printf("Abbandoni: %d\n", abbandoni);
     printf("Arrivi totali: %d\n", arrivi_totali);
 
-    info_su_configurazioni_attive();
 }
 
 

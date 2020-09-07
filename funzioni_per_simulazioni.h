@@ -36,7 +36,7 @@ int scegli_fila(struct cliente *cli, struct evento *e){
     int tipo_spesa;
     if(acquisti <= acquisti_leggeri){
         tipo_spesa = selettiva_leggera;
-    }else if(acquisti_leggeri < acquisti && acquisti <= max_acquisti){
+    }else if(acquisti_leggeri < acquisti && acquisti <= acquisti_medi){
         tipo_spesa = selettiva_media;
     }else{
         tipo_spesa = selettiva_pesante;
