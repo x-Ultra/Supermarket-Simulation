@@ -305,6 +305,12 @@ int T = opening_time;
 #define incr_2_10_pc 10002
 #define incr_3_10_sel 10003
 #define incr_3_10_sel_cond 10004
+#define sperimentale_60_20_20 6
+#define sperimentale_20_60_20 7
+#define sperimentale_20_20_60 8
+#define sperimentale_leggera_condivisa 9
+#define sperimentale_media_condivisa 10
+#define sperimentale_pesante_condivisa 11
 //3 casse selettive e da 1 a 7 casse con fila condivisa
 #define mista_3_x 10005
 //da 1 a 9 casse ocn fila condivisa più una selettiva legera
@@ -370,3 +376,6 @@ int guadagno_attesa_cliente = 1;
 int costo_abbandono_cliente = 20;
 
 int guadagno_mensile_cassieri = 1300;
+
+//file dove verra salvato lo stato del generatore
+char *filename_stato = "stato_generatore.txt";

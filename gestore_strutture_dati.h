@@ -66,6 +66,10 @@ char *secondi_ora(int secondi){
 
     sprintf(all_str, "%s:%s:%s", ora_str, min_str, sec_str);
 
+    free(ora_str);
+    free(min_str);
+    free(sec_str);
+
     return all_str;
 }
 
@@ -113,15 +117,6 @@ struct fila_cassa *crea_fila(){
     return fc;
 }
 
-int aggiungi_cliente_infila(struct fila_cassa *fila, struct cliente *cli){
-
-    fila->cliente_in_fila = cli;
-    fila->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
-    fila->next->cliente_in_fila = NULL;
-    fila->next->next = NULL;
-
-    return 0;
-}
 
 int lunghezza_fila(struct fila_cassa *fila){
 
@@ -168,23 +163,6 @@ struct casse *genera_set_casse(int num_casse){
 }
 
 
-//possibilità di aggiungere una cassa ad una configurazione esistente
-int aggiungi_cassa(struct casse *casse){
-
-    struct casse *c = casse;
-    while(1){
-
-        if(c->next == NULL){
-            c->next = genera_set_casse(1);
-            break;
-        }
-    }
-
-    casse->fila_cassa = crea_fila();
-    casse->next = (struct casse *)malloc(sizeof(struct casse));
-
-    return 0;
-}
 
 int numero_casse(struct casse *casse){
 
@@ -932,7 +910,6 @@ void free_configurazioni(){
             free(casse);
         }
         free(current->configurazione_cassa);
-        free(current);
     }
 
 }
@@ -973,6 +950,15 @@ void stampa_num_eventi(int num){
     }
 
 }
+
+void free_eventi(){
+
+    for(struct lista_eventi *le = eventi->next; le != NULL; le = le->next){
+        free(le->prev);
+    }
+
+}
+
 
 void stampa_evento(struct evento *e){
 

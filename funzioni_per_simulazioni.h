@@ -251,6 +251,7 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     }else{
         D(printf("2\n"));
         //se il cliente e' l'unico della fila, prima di avanzare, crea un posto libero.
+
         ((struct fila_cassa *)*(cli->fila_scelta))->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
         ((struct fila_cassa *)*(cli->fila_scelta))->next->next = NULL;
         ((struct fila_cassa *)*(cli->fila_scelta))->next->id = ((struct fila_cassa *)*(cli->fila_scelta))->id;
@@ -263,7 +264,7 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     struct fila_cassa *temp =((struct fila_cassa *)*(cli->fila_scelta));
     //Scorri la fila, deve cambiare per tutti !, cambiamento visibile a tutti.
     *(cli->fila_scelta) = ((struct fila_cassa *)*(cli->fila_scelta))->next;
-    free(temp);
+
     D(printf("La fila %d scorre in avanti\n",((struct fila_cassa *)*(cli->fila_scelta))->id));
 
     //il cliente ha liberato la cassa di una fila condivisa, se ha scelto una config. con fila condivisa.
@@ -343,9 +344,11 @@ void start(){
     popola_arrivi(giorno_corrente);
 
     struct evento *evento_corrente;
+    struct lista_eventi *prev = NULL;
 
     //scorro gli eventi
     for(struct lista_eventi *e = eventi; e != NULL;  e = e->next){
+
         evento_corrente = e->evento;
 
 
@@ -379,8 +382,6 @@ void start(){
             servi_prossimo_cliente(evento_corrente->fila->cliente_in_fila, evento_corrente);
         }
 
-        //elimina l'evento una volta gestito
-        free(evento_corrente);
 
         D(printf("\n"));
         D(stampa_evento(evento_corrente));

@@ -43,7 +43,7 @@ def start_selecting():
             best_row_day = float('inf')
             day_selected = {}
             for row in results[config_name][day]:
-                if(int(row[" Costo Mensile"][1:].split(".")[0]) <= best_row_day):
+                if(int(row[" Costo Mensile"][1:].split(".")[0]) < best_row_day):
                     day_selected = row
                     best_row_day = int(row[" Costo Mensile"][1:].split(".")[0])
 
@@ -56,7 +56,7 @@ def start_selecting():
         day_selected = {}
         for config_name in migliori:
 
-            if(int(migliori[config_name][day][" Costo Mensile"][1:].split(".")[0]) <= best_row_day):
+            if(int(migliori[config_name][day][" Costo Mensile"][1:].split(".")[0]) < best_row_day):
                 day_selected = migliori[config_name][day]
                 best_row_day = int(migliori[config_name][day][" Costo Mensile"][1:].split(".")[0])
 

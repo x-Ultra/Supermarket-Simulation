@@ -5,15 +5,9 @@
 #include "funzioni_per_simulazioni.h"
 #include "rngs.h"
 #include <math.h>
+#include <string.h>
 
 #define pseudo_casuale_s 0
-
-#define sperimentale_60_20_20 6
-#define sperimentale_20_60_20 7
-#define sperimentale_20_20_60 8
-#define sperimentale_leggera_condivisa 9
-#define sperimentale_media_condivisa 10
-#define sperimentale_pesante_condivisa 11
 
 
 
@@ -59,32 +53,37 @@ char *inizializza(int num_simulazione, int num_casse){
 
         case pseudo_casuale_s:
             aggiungi_configurazione_cassa(pseudo_casuale, num_casse, 0);
-            return "pseudo_casuale";
+            sprintf(str, "pseudo_casuale");
+            return str;
 
         case sperimentale_60_20_20:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[0], nums[1], nums[2], 1, 1, 1);
             free(nums);
-            return "sperimentale_60_20_20";
+            sprintf(str, "sperimentale_60_20_20");
+            return str;
 
         case sperimentale_20_60_20:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[1], nums[0], nums[2], 1, 1, 1);
             free(nums);
-            return "sperimentale_20_60_20";
+            sprintf(str, "sperimentale_20_60_20");
+            return str;
 
         case sperimentale_20_20_60:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[2], nums[1], nums[0], 1, 1, 1);
             free(nums);
-            return "sperimentale_20_20_60";
+            sprintf(str, "sperimentale_20_20_60");
+            return str;
 
         case sperimentale_leggera_condivisa:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(nums[0], 0, 0, 1, 1, 1);
             aggiungi_configurazione_cassa(condivisa, nums[1]+nums[2], 0);
             free(nums);
-            return "sperimentale_leggera_condivisa";
+            sprintf(str, "sperimentale_leggera_condivisa");
+            return str;
 
         case sperimentale_media_condivisa:
             nums = get_split(num_casse, 60, 20, 20);
@@ -93,14 +92,16 @@ char *inizializza(int num_simulazione, int num_casse){
             aggiungi_configurazione_cassa(condivisa, nums[1]+nums[2], 0);
             //info_su_configurazioni_attive();
             free(nums);
-            return "sperimentale_media_condivisa";
+            sprintf(str, "sperimentale_media_condivisa");
+            return str;
 
         case sperimentale_pesante_condivisa:
             nums = get_split(num_casse, 60, 20, 20);
             aggiungi_configurazione_selettiva_custom(0, 0, nums[0], 1, 1, 1);
             aggiungi_configurazione_cassa(condivisa, nums[1]+nums[2], 0);
             free(nums);
-            return "sperimentale_pesante_condivisa";
+            sprintf(str, "sperimentale_pesante_condivisa");
+            return str;
 
         case incr_2_10_cond:
             aggiungi_configurazione_cassa(condivisa, num_casse, 0);
@@ -148,19 +149,12 @@ char *inizializza(int num_simulazione, int num_casse){
     //lasciato per test manuale
     aggiungi_configurazione_cassa(condivisa, num_casse, 0);
 
-    return "undefined";
+    sprintf(str, "undefined");
+    return str;
 
 }
 
 void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num_cassieri){
-
-
-    FILE *ff = fopen("simulation_results_all.csv","a");
-    if(ff == NULL)
-    {
-        printf("Impossibile creare/aprire file!");
-        exit(1);
-    }
 
     super_supermarket = 1;
     super_factor = 10;
@@ -183,9 +177,10 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             for (int i = 0; i < num_simulazioni; ++i) {
 
                 if(config_attive != NULL){
-
                     free_configurazioni();
+                    free_eventi();
                 }
+
                 eventi = NULL;
                 config_attive = NULL;
 
@@ -194,7 +189,6 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
                 attesa_media_corrente = 0;
                 varianza_tempo_attesa = 0;
                 slowdown_medio_corrente = 0;
-
 
                 tipo_config_str = inizializza(tipo_simulazione, num_cassieri);
 
@@ -233,6 +227,7 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             double Snabb = 0;
 
             double t_alpha_mezzi = get_stud(alpha);
+            double *chi = get_chi(alpha);
 
 
             if(t_alpha_mezzi == -1){
@@ -272,24 +267,31 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             Snabb = sqrt(Snabb);
 
             //varianza media attesa
-            ic_var_r = ((num_simulazioni -1)*(Snatt*Snatt))/get_chi(alpha)[0];
-            ic_var_l = ((num_simulazioni -1)*(Snatt*Snatt))/get_chi(alpha)[1];
+            ic_var_r = ((num_simulazioni -1)*(Snatt*Snatt))/chi[0];
+            ic_var_l = ((num_simulazioni -1)*(Snatt*Snatt))/chi[1];
 
             //media attesa
-            ic_att_l = Xnatt - (double)get_stud(alpha)*Snatt/sqrt(num_simulazioni);
-            ic_att_r = Xnatt + (double)get_stud(alpha)*Snatt/sqrt(num_simulazioni);
+            ic_att_l = Xnatt - (double)t_alpha_mezzi*Snatt/sqrt(num_simulazioni);
+            ic_att_r = Xnatt + (double)t_alpha_mezzi*Snatt/sqrt(num_simulazioni);
 
             //media slowdown
-            ic_slow_l = Xnslow - (double)get_stud(alpha)*Snslow/sqrt(num_simulazioni);
-            ic_slow_r = Xnslow + (double)get_stud(alpha)*Snslow/sqrt(num_simulazioni);
+            ic_slow_l = Xnslow - (double)t_alpha_mezzi*Snslow/sqrt(num_simulazioni);
+            ic_slow_r = Xnslow + (double)t_alpha_mezzi*Snslow/sqrt(num_simulazioni);
 
             //media arrivi
-            ic_arr_l = Xnarr - (double)get_stud(alpha)*Snarr/sqrt(num_simulazioni);
-            ic_arr_r = Xnarr + (double)get_stud(alpha)*Snarr/sqrt(num_simulazioni);
+            ic_arr_l = Xnarr - (double)t_alpha_mezzi*Snarr/sqrt(num_simulazioni);
+            ic_arr_r = Xnarr + (double)t_alpha_mezzi*Snarr/sqrt(num_simulazioni);
 
             //media abbandoni
-            ic_abb_l = Xnabb - (double)get_stud(alpha)*Snabb/sqrt(num_simulazioni);
-            ic_abb_r = Xnabb + (double)get_stud(alpha)*Snabb/sqrt(num_simulazioni);
+            ic_abb_l = Xnabb - (double)t_alpha_mezzi*Snabb/sqrt(num_simulazioni);
+            ic_abb_r = Xnabb + (double)t_alpha_mezzi*Snabb/sqrt(num_simulazioni);
+
+            FILE *ff = fopen("simulation_results_all.csv","a");
+            if(ff == NULL)
+            {
+                printf("Impossibile creare/aprire file!");
+                exit(1);
+            }
 
             //calcolo del costo mensile del supermercato.
             double costo_mensile = num_cassieri*2*guadagno_mensile_cassieri - guadagno_attesa_cliente*minuti_sotto(Xnatt)*4*Xnarr + costo_abbandono_cliente*Xnabb*4;
@@ -299,6 +301,10 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
                     secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
                     massima_lunghezza_fila_tollerata, costo_mensile);
 
+
+            fclose(ff);
+            free(chi);
+
             /*printf("%s, %d, %s, [%s; %s], [%f; %f], [%s; %s], [%f; %f], [%f; %f], %d, %f\n",
                    tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
@@ -307,12 +313,14 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
 
             printf("Tipo test: %s, Giorno: %s fatto, con %d num_casse\n", tipo_config_str, giorno_str(giorno_corrente), num_cassieri);
 
+            free(tipo_config_str);
+
             giorno_corrente++;
 
         } while (giorno_corrente <= dom);
     }
 
-    fclose(ff);
+
 }
 
 
@@ -375,6 +383,8 @@ void test_manuale(){
     printf("Deviazione std tempo d'attesa: %s\n", secondi_ora(sqrt(varianza_tempo_attesa)));
     printf("Abbandoni: %d\n", abbandoni);
     printf("Arrivi totali: %d\n", arrivi_totali);
+
+    info_su_configurazioni_attive();
 }
 
 
@@ -383,26 +393,57 @@ void test_manuale(){
 void tutte_simulazioni(){
 
 
-    simulazioni(sperimentale_60_20_20, 4, 10);
-    simulazioni(sperimentale_20_60_20, 4, 10);
-    simulazioni(sperimentale_20_20_60, 4, 10);
-    simulazioni(sperimentale_leggera_condivisa, 4, 10);
-    simulazioni(sperimentale_media_condivisa, 4, 10);
+    //simulazioni(incr_2_10_cond, 1, 1);
+
+    //simulazioni(sperimentale_60_20_20, 4, 10);
+    //simulazioni(sperimentale_20_60_20, 4, 10);
+    //simulazioni(sperimentale_20_20_60, 4, 10);
+    //simulazioni(sperimentale_leggera_condivisa, 4, 10);
+    //simulazioni(sperimentale_media_condivisa, 4, 10);
     //simulazioni(sperimentale_pesante_condivisa, 4, 10);
     //simulazioni(incr_2_10_cond, 2, 10);
     //simulazioni(incr_2_10_pc, 2, 10);
     //simulazioni(incr_3_10_sel, 3, 10);
     //simulazioni(incr_3_10_sel_cond, 3, 10);
     //simulazioni(mista_3_x, 1, 7); <---- !
-    simulazioni(mista_1_x, 1, 9);
+    //simulazioni(mista_1_x, 1, 9);
 
 }
 
-int main() {
+int main(int argc, char **argv) {
 
+    if(argc == 2){
+        PlantSeeds(SEED);
+        test_manuale();
+        return 0;
+    }
 
-    PlantSeeds(SEED);
-    //test_manuale();
-    tutte_simulazioni();
+    if(argc == 4){
+        PlantSeeds(SEED);
+    }else if(argc == 5){
+        //estraggo il seme passato
+        long stato = atol(argv[4]);
+        PlantSeeds(stato);
+
+        printf("Stato caricato: %ld\n", stato);
+
+    }else{
+        printf("Input errati\nUso: ./simu test-manuale\n./simu tipo_sperimentazione min_cass max_cass [seme]\n");
+        return -1;
+    }
+
+    simulazioni(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
+
+    //salvo lo stato del generatore
+    long stato_gen = 0;
+
+    GetSeed(&stato_gen);
+    FILE *fp;
+
+    fp = fopen(filename_stato, "w+");
+    fprintf(fp, "%ld", stato_gen);
+    fclose(fp);
+
     return 0;
+
 }
