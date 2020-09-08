@@ -171,12 +171,13 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             int abbandoni_tot[num_simulazioni];
             int arrivi_tot[num_simulazioni];
 
-            char *tipo_config_str;
+
+            char *tipo_config_str = malloc(200);
 
             //fare num_ismulazioni per ogni giorno, commentare i risultati in base al giorno
             for (int i = 0; i < num_simulazioni; ++i) {
 
-                if(config_attive != NULL){
+                if(config_attive != NULL && !(giorno_corrente == lun && i == 0)){
                     free_configurazioni();
                     free_eventi();
                 }
@@ -190,8 +191,10 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
                 varianza_tempo_attesa = 0;
                 slowdown_medio_corrente = 0;
 
-                tipo_config_str = inizializza(tipo_simulazione, num_cassieri);
+                char* temp = inizializza(tipo_simulazione, num_cassieri);
 
+                strcpy(tipo_config_str, temp);
+                free(temp); 
                 //printf("Inizializzazione %d completa per giorno %d\n", i, giorno_corrente);
                 start();
 
@@ -296,12 +299,20 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
             //calcolo del costo mensile del supermercato.
             double costo_mensile = num_cassieri*2*guadagno_mensile_cassieri - guadagno_attesa_cliente*minuti_sotto(Xnatt)*4*Xnarr + costo_abbandono_cliente*Xnabb*4;
 
+            char* ic_att_l_so = secondi_ora(ic_att_l);
+            char* ic_att_r_so = secondi_ora(ic_att_r);
+            char* ic_var_l_so = secondi_ora(ic_var_l);
+            char* ic_var_r_so = secondi_ora(ic_var_r);
+
             fprintf(ff, "%s, %d, %s, \"[%s; %s]\", \"[%f; %f]\", \"[%s; %s]\", \"[%f; %f]\", \"[%f; %f]\", %d, %f\n",
-                    tipo_config_str, num_cassieri, giorno_str(giorno_corrente), secondi_ora(ic_att_l),
-                    secondi_ora(ic_att_r), ic_slow_l, ic_slow_r, secondi_ora(ic_var_l), secondi_ora(ic_var_r), ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
+                    tipo_config_str, num_cassieri, giorno_str(giorno_corrente), ic_att_l_so,
+                    ic_att_r_so, ic_slow_l, ic_slow_r, ic_var_l_so, ic_var_r_so, ic_abb_l, ic_abb_r, ic_arr_l, ic_arr_r,
                     massima_lunghezza_fila_tollerata, costo_mensile);
 
-
+            free(ic_att_l_so);
+            free(ic_att_r_so);
+            free(ic_var_l_so);
+            free(ic_var_r_so);
             fclose(ff);
             free(chi);
 
@@ -320,7 +331,10 @@ void simulazioni(int tipo_simulazione, int numero_iniziale_cassieri, int max_num
         } while (giorno_corrente <= dom);
     }
 
-
+    if(config_attive != NULL){
+        free_configurazioni();
+        free_eventi();
+    }
 }
 
 

@@ -252,7 +252,8 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
         D(printf("2\n"));
         //se il cliente e' l'unico della fila, prima di avanzare, crea un posto libero.
 
-        ((struct fila_cassa *)*(cli->fila_scelta))->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
+        //printf("%p\n", ((struct fila_cassa *)*(cli->fila_scelta))->next->next);
+        //((struct fila_cassa *)*(cli->fila_scelta))->next = (struct fila_cassa *)malloc(sizeof(struct fila_cassa));
         ((struct fila_cassa *)*(cli->fila_scelta))->next->next = NULL;
         ((struct fila_cassa *)*(cli->fila_scelta))->next->id = ((struct fila_cassa *)*(cli->fila_scelta))->id;
         ((struct fila_cassa *)*(cli->fila_scelta))->next->cliente_in_fila = NULL;
@@ -264,6 +265,8 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
     struct fila_cassa *temp =((struct fila_cassa *)*(cli->fila_scelta));
     //Scorri la fila, deve cambiare per tutti !, cambiamento visibile a tutti.
     *(cli->fila_scelta) = ((struct fila_cassa *)*(cli->fila_scelta))->next;
+
+    free(temp);
 
     D(printf("La fila %d scorre in avanti\n",((struct fila_cassa *)*(cli->fila_scelta))->id));
 
@@ -310,9 +313,12 @@ int servi_prossimo_cliente(struct cliente *cli, struct evento *e){
                     D(printf("Iniziato a servire: %d\n", ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila->iniziato_a_servire));
                     genera_evento_servito(((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->cliente_in_fila);
 
+                    struct fila_cassa *temp2 = ((struct config_cassa *)*cli->config_scelta)->fila_condivisa;
                     //faccio infine avanzare la fila condivisa
                     ((struct config_cassa *)*cli->config_scelta)->fila_condivisa = ((struct config_cassa *)*(cli->config_scelta))->fila_condivisa->next;
 
+                    free(temp2);
+                    free(cli);
                     return 0;
                 }
             }
@@ -370,6 +376,7 @@ void start(){
             if(cliente->fila_scelta == NULL){
                 abbandoni++;
                 D(printf("Nuovo cliente ha abbandonato\n"));
+                free(cliente);
                 continue;
             }
 

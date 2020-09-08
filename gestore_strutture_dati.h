@@ -113,7 +113,6 @@ struct fila_cassa *crea_fila(){
     fc->next = NULL;
     fc->id = file_ids;
     file_ids ++;
-
     return fc;
 }
 
@@ -896,23 +895,7 @@ void info_su_configurazioni_attive(){
     }
 }
 
-void free_configurazioni(){
 
-
-    for(struct config_cassa_attive *current = config_attive; current != NULL; current = current->next){
-
-        for(struct casse *casse = current->configurazione_cassa->casse; casse != NULL; casse = casse->next){
-
-            for(struct fila_cassa *fila = casse->fila_cassa; fila != NULL; fila = fila->next){
-
-                free(fila);
-            }
-            free(casse);
-        }
-        free(current->configurazione_cassa);
-    }
-
-}
 
 
 char* tipo_evento_str(int tipo){
@@ -952,9 +935,17 @@ void stampa_num_eventi(int num){
 }
 
 void free_eventi(){
+    struct lista_eventi *le = eventi;
+    struct lista_eventi *temp;
+    while (le != NULL){
+        
+        if (le->evento != NULL)
+            free(le->evento);
 
-    for(struct lista_eventi *le = eventi->next; le != NULL; le = le->next){
-        free(le->prev);
+        temp = le->next;
+        free(le);
+
+        le = temp;
     }
 
 }
@@ -1037,6 +1028,62 @@ double get_stud(int alpha){
 
 }
 
+void free_configurazioni(){
+
+
+    struct config_cassa_attive *current = config_attive;
+    struct casse *casse;
+    struct fila_cassa *fila;
+
+    struct config_cassa_attive *temp_attive;
+    struct casse *temp_casse;
+    struct fila_cassa *temp_fila;
+    //info_su_configurazioni_attive();
+    char *tipo_str = tipo_config(current->configurazione_cassa->tipo);
+
+    while(current != NULL){
+        
+        if (current->configurazione_cassa != NULL && strcmp(tipo_config(current->configurazione_cassa->tipo), "Non Registrata") != 0)
+            casse = current->configurazione_cassa->casse;
+        else 
+            casse = NULL;
+
+        while( casse != NULL ){
+            
+            fila = casse->fila_cassa;
+
+            fflush(stdout);
+            while(fila != NULL){
+                temp_fila = fila->next;
+                free(fila);
+                fila = temp_fila;
+            }
+
+            fflush(stdout);
+            temp_casse = casse->next;
+            free(casse);
+            casse = temp_casse;
+        }
+
+        fflush(stdout);
+        if (current->configurazione_cassa != NULL && strcmp(tipo_config(current->configurazione_cassa->tipo), "Non Registrata") != 0 && current->configurazione_cassa->fila_condivisa != NULL) {
+            fila = current->configurazione_cassa->fila_condivisa;
+            while(fila != NULL){
+                temp_fila = fila->next;
+                free(fila);
+                fila = temp_fila;
+            }
+        }
+
+        if (strcmp(tipo_config(current->configurazione_cassa->tipo), "Non Registrata") != 0)    
+            free(current->configurazione_cassa);
+
+        temp_attive = current->next;
+        free(current);
+        current = temp_attive;
+    }
+
+}
 
 
 

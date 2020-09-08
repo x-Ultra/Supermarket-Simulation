@@ -35,7 +35,7 @@ def create_box_plot(tags, ics, filename):
 	    ax.plot((tag,tag),(ic[0],ic[1]),'_-')
 
 
-	plt.ylabel("Numero medio di abbandoni")
+	plt.ylabel("Tempo medio di attesa")
 	fig.autofmt_xdate()
 	plt.show()
 	#plt.savefig(filename)
@@ -82,7 +82,7 @@ for i in range(0, len(ics_abbandoni)):
 
 print(ics_abbandoni)
 
-create_box_plot(tags, ics_abbandoni, "pippo")
-#create_box_plot(tags, ics_attesa, "wait_box_plot.png")
+#create_box_plot(tags, ics_abbandoni, "pippo")
+create_box_plot(tags, ics_attesa, "wait_box_plot.png")
 
 create_bar_plot(tags, formula)
